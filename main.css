@@ -1,0 +1,40 @@
+@charset "UTF-8";
+
+
+.box{
+  display: inline-block;
+  width: 200px;
+  height: 100px;
+  padding: 10px;
+  position: static;
+  border-style: dashed;
+  border-width: 1px;
+  border-color: rgb(176,140,70)
+}
+.box2{
+	display: table;
+	width: 100%;
+	background-color: red;	
+}
+
+.center{
+	width: 1000px;
+	height: 1000px;
+	background-color: blue;
+	float: left;
+}
+
+.wrapper {
+	overflow : hidden;
+}
+.main {
+	float : left;
+	width : -webkit-calc (100 % - 300px);
+	width : calc (100 % - 300px);
+	background-color: yellow;
+}
+.side {
+	float : right;
+	width : 300px;
+	background-color: blue;
+}
