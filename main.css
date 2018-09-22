@@ -1,16 +1,23 @@
 @charset "UTF-8";
 
 
+
 .box{
-  display: inline-block;
-  width: 200px;
-  height: 100px;
-  padding: 10px;
-  position: static;
+  position: absolute;
   border-style: dashed;
   border-width: 1px;
-  border-color: rgb(176,140,70)
+  border-color: rgb(176,140,70);
+  background-color: ghostwhite;
 }
+
+.canvas{
+	position: absolute;
+	border-width: 0px;
+	background-color: rgba(0,0,0,0);
+}
+
+
+
 .box2{
 	display: table;
 	width: 100%;

@@ -4,37 +4,34 @@
 		<meta charset="utf-8">
 		<title>Calculator</title>
 		<link rel="stylesheet" type="text/css" href="./main.css" >
-		<style type="text/css">
-
-		</style>
+		
 		<script>
-		window.onload=function() {
-		    var cnvs = document.getElementById("cnvs");
-		    if (cnvs.getContext) {
-		        var ctx = cnvs.getContext('2d');
-		        
-		        // 좌측 상단 빨간 사각형
-		        ctx.fillStyle = "rgb(255, 0, 0)";
-		        ctx.fillRect(10, 10, 50, 50);
-		        // 우측 하단 파란 사각형 (반투명)
-		        ctx.fillStyle = "rgba(0, 0, 255, 0.5)";
-		        ctx.fillRect(40, 40, 50, 50);
-		    }
-		    else alert('canvas를 지원하지 않는 브라우저입니다.');
-		}
 		</script>
 
 	</head>
 	<body>
-		<canvas id="cnvs" width="100" height="100" style="background-color: ghostwhite; border: 1px solid black;"></canvas>
+		<div class="canvas">
+			<canvas id="chart0" height="500" width="500" style='border:1px solid' 
+        		onmousemove='drawPath(event)'
+  				onmousedown='registerDrawingMode(event)'
+  				onmouseup='releaseDrawingMode()'></canvas>
+		</div>
+		
+		<div>
+			<hr class="two">
+		</div>
+		
+		<!--
 		<div class="box">
             <h1>content</h1>
         </div>
-        <!-- content close -->
+        
         <div class="box">
             <h1>sidebar</h1>
         </div>
-        <!-- sidebar close -->
-		
+    	-->
+    	<script src="./ArrayList.js"></script>
+		<script src="./test.js"></script>
+
 	</body>
 </html>
