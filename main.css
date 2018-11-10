@@ -10,38 +10,32 @@
   background-color: ghostwhite;
 }
 
-.canvas{
+.canvas1{
 	position: absolute;
 	border-width: 0px;
-	background-color: rgba(0,0,0,0);
+	background-color: ghostwhite;
+	z-index: 1;
 }
-
-
-
-.box2{
-	display: table;
-	width: 100%;
-	background-color: red;	
-}
-
-.center{
+.canvas2{
+	position: relative;
+	border-width: 0px;
+	background-color: rgba(0,0,10,0);
+	z-index: 2;
 	width: 1000px;
-	height: 1000px;
-	background-color: blue;
-	float: left;
+	height: 520px;
+}
+.canvas3{
+	position: relative;
+	border-width: 1px;
+	background-color: ghostwhite;
+	z-index: 3;
 }
 
-.wrapper {
-	overflow : hidden;
+.formula{
+	margin-right: 20px;
+	padding: 15px;
+	border: 1px solid;
+	float: left;
+	
 }
-.main {
-	float : left;
-	width : -webkit-calc (100 % - 300px);
-	width : calc (100 % - 300px);
-	background-color: yellow;
-}
-.side {
-	float : right;
-	width : 300px;
-	background-color: blue;
-}
+
