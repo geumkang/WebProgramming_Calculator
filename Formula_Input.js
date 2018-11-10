@@ -121,31 +121,9 @@ function releaseDrawingMode() {
 		insert_operation(type, common_parent, totalNum);
 		//console.log(calculate_tree_toString(root_node));
 
-		// context2.beginPath();
-		// context2.lineWidth = 1;
-		// context2.setLineDash([3,1]);
-		// context2.strokeStyle = "rgb(255,0,0)"
-
-		// var X = lastX[lastX.length - 1];
-		// var Y = SectionList[common_parent.index].Y + (SectionList[common_parent.index].H / 2);
-
-		// var Symbol = new Section(X, Y - (unit*1), (unit*2), (unit*2), false);	// 더하기
-		// var NDSection  = new Section(X + (unit*2), Y - (canvas[0].height/2), (unit*12), canvas[0].height, true);	// 더하기 옆 공간
-
-		// SectionList.push(Symbol);
-		// SectionList.push(NDSection);
-
 		if(tree_search(root_node, g_current_section_start).type != "Arithmetic"){
 			drawFormulaRoot(g_current_section_start, current_section_end);
 		}
-		// context2.strokeRect(X, Y - (unit*1), (unit*2), (unit*2));
-		// context2.strokeRect(X + (unit*2), Y - (canvas[0].height/2), (unit*12), canvas[0].height);
-
-		// lastX.push(lastX[lastX.length-1] + unit*14);
-
-		// context2.stroke();
-		// context2.setLineDash([0]);
-
 		borderLineMoved = false;
 	}
 	// 가이드라인 위치 변경 중
@@ -392,17 +370,19 @@ function drawLineAndExpr(i, exprType)
 	else if(exprType == "plain_text")
 	{
 		var current_node = tree_search(root_node, i);
+		var input_text = document.getElementById(exprType).value;
 
-		console.log(current_node);
+		//For Experimetal
+		processExpr2DrawandTree(i, input_text);
 
-		current_node.type = "plain_text";
-		current_node.value = document.getElementById(exprType).value;
-		console.log(current_node.value);
+
+		//current_node.type = "plain_text";
+		//current_node.value = input_text;
 
 		//Position NOT DEFINED NOW!! FIXES NEEDED!
 
-		context2.font = "20px Georgia";
-		context2.fillText(current_node.value,SectionList[i].X, SectionList[i].Y + SectionList[i].H/2);
+		//context2.font = "20px Georgia";
+		//context2.fillText(current_node.value,SectionList[i].X, SectionList[i].Y + SectionList[i].H/2);
 
 		console.log(get_total_expr());
 	}
@@ -425,6 +405,7 @@ function drawLineAndExpr(i, exprType)
 
 	backup.push(SectionList.slice());
 }
+
 function undo(){
 	backup.pop();
 	context2.clearRect(0, 0, canvas[0].width, canvas[0].height);
@@ -443,8 +424,79 @@ function undo(){
 	context2.setLineDash([0]);
 	context.clearRect(0, 0, canvas[0].width, canvas[0].height);
 
-
 }
+
+function processExpr2DrawandTree(i, text)
+{
+	var index = i;
+	var input_text = StringTokenizerForExpr(text);
+	var numofSec = input_text.length;
+
+	var current_node = tree_search(root_node,i);
+
+	if(current_node.type == "Arithmetic")
+	{
+		current_node = current_node.parent_node;
+		index = current_node.index;
+	}
+
+	current_node.type = "Arithmetic";
+
+	var exist_node_num = current_node.nodelist.length;
+
+	var current_section = SectionList[index];
+
+	var section_posX = SectionList[index].X;
+	var section_posY = SectionList[index].Y;
+	var section_W = SectionList[index].W;
+	var section_H = SectionList[index].H;
+
+	var indv_section_w = section_W / (numofSec + exist_node_num);
+
+	var indv_type;
+	var indv_value;
+	var indv_posX;
+
+	context2.font = "20px Georgia";
+
+	console.log(exist_node_num);
+
+	for(var loop = 0; loop < exist_node_num; loop++)
+	{
+		indv_posX = section_posX + loop * indv_section_w;
+		//DRAW PROCEDUDES
+		SectionList[current_node.nodelist[loop].index].X = indv_posX;
+		SectionList[current_node.nodelist[loop].index].W = indv_section_w;
+		context2.strokeRect(indv_posX, section_posY, indv_section_w, section_H);
+		context2.fillText(current_node.nodelist[loop].value, indv_posX, section_posY + section_H / 2);
+
+		//TREE PROCEDURES
+		push_to_nodelist(current_node, new calculate_tree(totalNum-1, indv_type, current_node, indv_value));
+	}
+
+	for(var loop = 0; loop < numofSec; loop++)
+	{
+		indv_posX = section_posX + (loop + exist_node_num)*indv_section_w;
+		indv_value = input_text[loop];
+		if(indv_value == "+" ||
+		indv_value == "-"||
+		indv_value == "/"||
+		indv_value == "*")
+		{
+			indv_type = "Arithmetic";
+		}
+		else
+		{
+			indv_type = "plain_text"
+		}
+		//DRAW PROCEDUDES
+		SectionList.push(new Section(indv_posX, section_posY, indv_section_w, section_H, true));
+		context2.strokeRect(indv_posX, section_posY, indv_section_w, section_H);
+		context2.fillText(indv_value, indv_posX, section_posY + section_H / 2);
+
+		//TREE PROCEDURES
+		push_to_nodelist(current_node, new calculate_tree(totalNum-1, indv_type, current_node, indv_value));
+	}
 
 //////////////////////////////////////////////////
 //
