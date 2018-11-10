@@ -20,19 +20,26 @@ function calculate_tree_root(type, parent_node)
 {
     this.index = -1;
     this.parent_node = parent_node;
-    this.type = type;
-    this.nodelist = new Array();
+		this.type = type;
+		this.nodelist = new Array();
     this.value = 0;
-    if(type == "plain_text")
-      this.nodelist.push(type);
 }
 
 function calculate_tree(index, type, parent_node)
 {
     this.index = index;
     this.parent_node = parent_node;
-    this.type = type;
-    this.nodelist = new Array();
+		this.type = type;
+		this.nodelist = new Array();
+}
+
+function calculate_tree(index, type, parent_node, value)
+{
+    this.index = index;
+    this.parent_node = parent_node;
+		this.type = type;
+    this.value = value;
+		this.nodelist = new Array();
 }
 
 //DEAD FUNCTION
@@ -93,7 +100,6 @@ function tree_search(node, index)
 
   for(var i = 0; i < node.nodelist.length; i++)
   {
-    console.log(node.nodelist[0].index);
     if(tree_search(node.nodelist[i], index) != null)
       return tree_search(node.nodelist[i], index);
   }
@@ -117,7 +123,7 @@ function get_total_expr()
 
 function calculate_tree_toString(node)
 {
-  var math_expr = "";
+	var math_expr = "";
 
   //console.log(node.type);
 
@@ -125,36 +131,37 @@ function calculate_tree_toString(node)
     return "ND";
 
   if(node.type == "root" || node.type == "ND")
+  {
     return calculate_tree_toString(node.nodelist[0]);
-
-  //X, x, 1, 234 ... plain text.
-  // if(node.type == "plain_text")
-  //  math_expr = node.nodelist[0];
-
-  //regex => type list[0] from list[1] to list[2]
-  //Typelist : Sigma, Integral, Lim
-  else if(node.type == "Sigma" || node.type == "Integral")
-  {
-    math_expr = "("
-    + node.type + " "
-    + calculate_tree_toString(node.nodelist[0])
-    + " from "
-    + calculate_tree_toString(node.nodelist[1])
-    + " to "
-    + calculate_tree_toString(node.nodelist[2])
-    + ")"
   }
 
-  //regx => list[0] type list[1]
-  //Typelist : Plus, Minus, Multiply, Divide, Equal
-  else if(node.type == "Plus" || node.type == "Minus" || node.type == "Multiply" || node.type == "Divide" || node.type == "Equal")
-  {
-    math_expr = "( "
-    + calculate_tree_toString(node.nodelist[0])
-    +" "+node.type+" "
-    + calculate_tree_toString(node.nodelist[1])
-    + " )"
-  }
+	//X, x, 1, 234 ... plain text.
+	// if(node.type == "plain_text")
+	// 	math_expr = node.nodelist[0];
+
+	//regex => type list[0] from list[1] to list[2]
+	//Typelist : Sigma, Integral, Lim
+	else if(node.type == "Sigma" || node.type == "Integral")
+	{
+		math_expr = "("
+		+ node.type + " "
+		+ calculate_tree_toString(node.nodelist[0])
+		+ " from "
+		+ calculate_tree_toString(node.nodelist[1])
+		+ " to "
+		+ calculate_tree_toString(node.nodelist[2])
+		+ ")"
+	}
+
+	//regx => list[0] type list[1]
+	//Typelist : Plus, Minus, Multiply, Divide, Equal
+	else if(node.type == "Arithmetic")
+	{
+		for(var i = 0; i < node.nodelist.length; i++)
+    {
+      math_expr += node.nodelist[i].value;
+    }
+	}
 
   else if(node.type == "plain_text")
   {
@@ -165,5 +172,5 @@ function calculate_tree_toString(node)
   {
     math_expr = node.type;
   }
-  return math_expr;
+	return math_expr;
 }

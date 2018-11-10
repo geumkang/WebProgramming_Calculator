@@ -1,9 +1,8 @@
-var current_button_type = "Root";
+var current_button_type = "Plus";
 
 var circularVal = 0;
-var circularNum = 1;
-var button_name_list = new Array("Root");
-//var button_name_list = new Array("Plus", "Minus", "Multiply", "Divide");
+var circularNum = 4;
+var button_name_list = new Array("Plus", "Minus", "Multiply", "Divide");
 
 function get_button_type()
 {
