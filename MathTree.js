@@ -121,6 +121,73 @@ function search_common_parent(start_node, end_node)
   }
 }
 
+
+
+function push_to_nodelist(current_node, child_node)
+{
+  current_node.nodelist.push(child_node);
+}
+
+function get_root_node()
+{
+  return root_node;
+}
+
+function get_total_expr()
+{
+  return calculate_tree_toString(root_node);
+}
+
+function calculate_tree_toString(node)
+{
+	var math_expr = "";
+
+  switch(node.type){
+      case ROOTNODE:
+        return calculate_tree_toString(node.nodelist[0]);
+        break;
+
+      case ARITHMETIC:
+        math_expr =
+        calculate_tree_toString(node.nodelist[0]) + " " +
+        node.value + " " +
+        calculate_tree_toString(node.nodelist[1]);
+        break;
+
+      case NONARITHMETIC:
+        if(node.value == "sigma" || node.value == "integral"){
+          math_expr =
+          node.value + " " +
+          calculate_tree_toString(node.nodelist[2]) + " " +
+          "from " + calculate_tree_toString(node.nodelist[0]) + " " +
+          "to " + calculate_tree_toString(node.nodelist[1]);
+        }
+        else{
+          math_expr = node.value;
+        }
+
+        break;
+
+      case ONLYDRAWABLE:
+        math_expr = node.value + "("+ calculate_tree_toString(node.nodelist[0]) +")";
+        break;
+
+      case NOTDEFINED:
+        math_expr = "ND";
+        break;
+
+        default:
+        console.log("Error Detected : ", node);
+          break;
+  }
+
+  return "(" + math_expr + ")";
+}
+
+
+/*
+지옥의무간도 절대안쓸거
+*/
 //CAUTION!!! Construct 2!!!! node.
 function insert_operation(type, target_node, index)
 {
@@ -149,73 +216,4 @@ function tree_search(node, index)
       return tree_search(node.nodelist[i], index);
   }
   return null;
-}
-
-function push_to_nodelist(current_node, child_node)
-{
-  current_node.nodelist.push(child_node);
-}
-
-function get_root_node()
-{
-  return root_node;
-}
-
-function get_total_expr()
-{
-  return calculate_tree_toString(root_node);
-}
-
-function calculate_tree_toString(node)
-{
-	var math_expr = "";
-
-  //console.log(node.type);
-
-  if(node.type == "ND" && node.nodelist.length == 0)
-    return "ND";
-
-  if(node.type == "root" || node.type == "ND")
-  {
-    return calculate_tree_toString(node.nodelist[0]);
-  }
-
-	//X, x, 1, 234 ... plain text.
-	// if(node.type == "plain_text")
-	// 	math_expr = node.nodelist[0];
-
-	//regex => type list[0] from list[1] to list[2]
-	//Typelist : Sigma, Integral, Lim
-	else if(node.type == "Sigma" || node.type == "Integral")
-	{
-		math_expr = "("
-		+ node.type + " "
-		+ calculate_tree_toString(node.nodelist[0])
-		+ " from "
-		+ calculate_tree_toString(node.nodelist[1])
-		+ " to "
-		+ calculate_tree_toString(node.nodelist[2])
-		+ ")"
-	}
-
-	//regx => list[0] type list[1]
-	//Typelist : Plus, Minus, Multiply, Divide, Equal
-	else if(node.type == "Arithmetic")
-	{
-		for(var i = 0; i < node.nodelist.length; i++)
-    {
-      math_expr += node.nodelist[i].value;
-    }
-	}
-
-  else if(node.type == "plain_text")
-  {
-    math_expr = node.value;
-  }
-
-  else
-  {
-    math_expr = node.type;
-  }
-	return math_expr;
 }
