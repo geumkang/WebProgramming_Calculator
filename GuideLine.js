@@ -122,7 +122,8 @@ function dropEnd(ev)
 	var node = findSection(event.clientX, event.clientY);
 
 	// 트리에 노드 추가
-	
+	SectionList = new Array();
+	traverse(root_node, new Section(0, 0, canvas.width, canvas.height));
 
 	console.log(exprType);
 }
