@@ -4,63 +4,27 @@
 		<meta charset="utf-8">
 		<title>Calculator</title>
 		<link rel="stylesheet" type="text/css" href="./main.css" >
-
 	</head>
 	<body>
-		<div class="canvas1">
-			<canvas id="chart0" height="500" width="1000" style='border:1px solid'
-        		></canvas>
+		<div id="title" class="title">
+			<h1><strong>Calculator</strong></h1>
 		</div>
-		<div class="canvas2" >
-			<canvas id="chart1" height="500" width="1000" style='border:1px solid'
-	        	onmousemove='drawPath(event)'
-				onmousedown='registerDrawingMode(event)'
-				onmouseup='releaseDrawingMode()'
-				ondragover = 'allowDrop(event)'
-				ondrop = "dropEnd(event)"
-				ondblclick = "enlargeWindowOn(event)" 
-			></canvas>
-			<canvas class="canvas3" id="chart2" height="300" width="500" style='top:-200px; border: 1px solid black; display: none' onmousemove='drawPath(event)'
-				onmousedown='registerDrawingMode(event)'
-				onmouseup='releaseDrawingMode()'
-				ondblclick = 'enlargeWindowOff()'
-			></canvas>
-		</div>
-		
-		
-		
-		<div>
-			<select name="FormulaType" id="FormulaSelectBox" onChange="GuideLineTypeChanged()">
-			    <option value="0" selected="selected">일반 수식</option>
-			    <option value="1">행렬 수식</option>
-			</select>
-		</div>
-		<div>
-			<select name="MatrixRow" id="MatrixRowSelectBox" onChange="GuideLineTypeChanged()">
-			    <option value="1" selected="selected">1</option>
-			    <option value="2">2</option>
-			    <option value="3">3</option>
-			    <option value="4">4</option>
-			    <option value="5">5</option>
-			    <option value="6">6</option>
-			    <option value="7">7</option>
-			    <option value="8">8</option>
-			    <option value="9">9</option>
-			</select>
-			<select name="MatrixCol" id="MatrixColSelectBox" onChange="GuideLineTypeChanged()">
-			    <option value="1" selected="selected">1</option>
-			    <option value="2">2</option>
-			    <option value="3">3</option>
-			    <option value="4">4</option>
-			    <option value="5">5</option>
-			    <option value="6">6</option>
-			    <option value="7">7</option>
-			    <option value="8">8</option>
-			    <option value="9">9</option>
-			</select>
-		</div>
+			
+		<div id="box" class="box" style="width: 100%; margin-left: 10%">
+			<div>
+				<button type="button"> General Formula </button>
+				<button type="button"> Array Formula </button>
+			</div>
+			<div class="canvas">
+				<canvas id="chart"
+		        	ondragover = 'allowDrop(event)'
+					ondrop = "dropEnd(event)"
+				></canvas>
+			</div>
+		</div>	
 
-		<div>
+		<div style="width: 100%; margin-left: 25%;">
+			<div style="width: 50%">
 			<p class="formula">
 				<img src="./Formula_Sigma.png" id="Sigma" width="70" height="70" draggable="true" ondragstart="dragStart(event)">
 			</p>
@@ -80,6 +44,10 @@
 			<p class="formula">
 				<input type="text" id="plain_text" name="plain_text" width="300" style="line-height:70px; font-size: 20pt; text-align: center" draggable="true" ondragstart="dragStart(event)" placeholder="숫자를 입력하세요">
 			</p>
+			<p class="formula">
+				<label>결과</label>
+			</p>
+			</div>
 		</div>
 
 
