@@ -51,8 +51,8 @@ function traverse(node, section){
 			console.log(getSize(node));
 			traverse(node.nodelist[0], new Section(section.X, section.H/2 + getSize(node)/2, getSize(node), section.H/2 - getSize(node)/2));
 			traverse(node.nodelist[1], new Section(section.X, section.Y, getSize(node), section.H/2 - getSize(node)/2));
-			section = drawGuideLine(section.X, section.Y, section.W, section.H, node);
-			secction = traverse(node.nodelist[2], section);
+			drawGuideLine(section.X, section.Y+section.H/2-getSize(node)/2, section.W, getSize(node), node);
+			secction = traverse(node.nodelist[2], new Section(section.X + getSize(node), section.Y, section.W - getSize(node), section.H));
 		}
 		else if(node.value == "integral"){
 			section = drawGuideLine(section.X, section.Y, section.W, section.H, node);
@@ -121,7 +121,7 @@ function getSize(node){
 			return unit*2;
 		}
 		else if(type == ARITHMETIC){	// + - * /
-			return unit;
+			return unit / 5;
 		}
 		else if(value == "sigma"){
 			return unit * 3;
@@ -130,7 +130,7 @@ function getSize(node){
 			return unit;
 		}
 		else if(type == NONARITHMETIC){
-			return node.value.length / 2 * unit;
+			return node.value.length / 5 * unit;
 		}
 		else{
 			console.log("Size Error : Unknown Type", node);
@@ -166,12 +166,12 @@ function dropEnd(ev)
 	context.clearRect(0, 0, canvas.width, canvas.height);
 
 	var exprType = ev.dataTransfer.getData("text");
-	var node = findSection(event.clientX, event.clientY);
+	var node = findSection(event.offsetX, event.offsetY);
 	//console.log("노드값은 " + node.value);
 	console.log(SectionList);
 	if(node != -1){
 		if(exprType == "plain_text"){
-		
+
 			insert(node, NONARITHMETIC, document.getElementById(exprType).value);	
 		}
 		else if(exprType == "plus" || exprType == "minus" || exprType == "multiply" || exprType == "divide"){
@@ -182,7 +182,6 @@ function dropEnd(ev)
 		}
 		console.log(root_node);
 		SectionList = new Array();
-		SectionList.push(new Section(0,0,canvas.width,canvas.height));
 		traverse(root_node.nodelist[0], new Section(0,0,canvas.width,canvas.height));
 	}
 }
