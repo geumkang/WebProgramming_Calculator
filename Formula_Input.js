@@ -189,18 +189,20 @@ function drawGuideLine(){
 			context2.drawImage(img, 0, 0, img.width, img.height, SectionList[i].X, SectionList[i].Y, SectionList[i].W, SectionList[i].H);
 		}
 		else if(currentNode.type == "Arithmetic"){
-			var img = new Image();
-			if(currentNode.value == "Plus")
-				img.src = document.getElementById("Plus").src;
-			else if(currentNode.value == "Minus")
-				img.src = document.getElementById("Minus").src;
-			else if(currentNode.value == "Multiply")
-				img.src = document.getElementById("Multiply").src;
-			else if(currentNode.value == "Divide")
-				img.src = document.getElementById("Divide").src;
-			context2.drawImage(img, 0, 0, img.width, img.height, SectionList[i].X, SectionList[i].Y, SectionList[i].W, SectionList[i].H);
+			console.log(currentNode)
+			// var img = new Image();
+			// if(currentNode.value == "Plus")
+			// 	img.src = document.getElementById("Plus").src;
+			// else if(currentNode.value == "Minus")
+			// 	img.src = document.getElementById("Minus").src;
+			// else if(currentNode.value == "Multiply")
+			// 	img.src = document.getElementById("Multiply").src;
+			// else if(currentNode.value == "Divide")
+			// 	img.src = document.getElementById("Divide").src;
+			// context2.drawImage(img, 0, 0, img.width, img.height, SectionList[i].X, SectionList[i].Y, SectionList[i].W, SectionList[i].H);
+			context2.fillText(currentNode.value, SectionList[i].X, SectionList[i].Y + SectionList[i].H / 2);
 		}
-		if(currentNode.type == "Root"){
+		else if(currentNode.type == "Root"){
 			var img = new Image();
 			// var topLeftNode = currentNode.nodeList[0];
 			// var topRightNode = currentNode.nodeList[topRightNode.nodelist.length-1];
@@ -209,6 +211,9 @@ function drawGuideLine(){
 			// while(topRightNode.nodelist.length != 0)
 			// 	topRightNode = topRightNode.nodelist[topRightNode.nodelist.length-1];
 			//drawFormulaRoot(topLeftNode.index, topRightNode.index);	
+		}
+		else if(currentNode.type == "plain_text"){
+			context2.fillText(currentNode.value, SectionList[i].X, SectionList[i].Y + SectionList[i].H / 2);
 		}
 	}
 	context2.stroke();
@@ -369,6 +374,17 @@ function drawLineAndExpr(i, exprType)
 	}
 	else if(exprType == "plain_text")
 	{
+		console.log(lastX)
+		if(i == 0){
+			var X = lastX[lastX.length - 1];
+			var limitX = unit*10;
+		}
+		else{
+			var X = SectionList[i].X;
+			var limitX = SectionList[i].W - (unit*6);
+			//console.log(X + " asdad " + limitX);
+		}
+
 		var current_node = tree_search(root_node, i);
 		var input_text = document.getElementById(exprType).value;
 
@@ -440,7 +456,6 @@ function processExpr2DrawandTree(i, text)
 		index = current_node.index;
 	}
 
-	current_node.type = "Arithmetic";
 
 	var exist_node_num = current_node.nodelist.length;
 
@@ -491,12 +506,12 @@ function processExpr2DrawandTree(i, text)
 		}
 		//DRAW PROCEDUDES
 		SectionList.push(new Section(indv_posX, section_posY, indv_section_w, section_H, true));
-		context2.strokeRect(indv_posX, section_posY, indv_section_w, section_H);
-		context2.fillText(indv_value, indv_posX, section_posY + section_H / 2);
-
+		
 		//TREE PROCEDURES
 		push_to_nodelist(current_node, new calculate_tree(totalNum-1, indv_type, current_node, indv_value));
 	}
+	drawGuideLine();
+}
 
 //////////////////////////////////////////////////
 //
