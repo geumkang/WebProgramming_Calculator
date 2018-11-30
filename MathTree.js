@@ -38,6 +38,20 @@ function calculate_tree(type, value, parent_node)
     this.id = identifier++;
 }
 
+function insert(current_node, type, value)
+{
+  var target_node = new calculate_tree(type, value, null);
+
+  //sigma / integral 전처리
+  if(type == NONARITHMETIC && ( value == "sigma" || value == "integral")){
+    push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node);
+    push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node);
+    push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node);
+  }
+
+  insert_node(current_node, target_node);
+}
+
 /*
 current_node : currently clicked node
 target_node : node to insert
@@ -64,15 +78,6 @@ function insert_node(current_node, target_node)
 
     return 1;
   }
-  //C = A & T = A (X)
-
-  //C = A & T = NA (X)
-
-  //C = NA & T = A (O)
-
-  //C = NA & T = NA (X)
-
-  //C = NA & T = ND (O)
 }
 
 //DEAD FUNCTION
@@ -93,21 +98,25 @@ function __insert_NA2A(source_node, target_node)
   }
 }
 
-function search_common_parent(start_node_index, end_node_index)
+function __insert_ND2NA(source_node, target_node)
+{
+  source_node.type = NONARITHMETIC;
+  source_node.value = target_node.value;
+}
+
+function search_common_parent(start_node, end_node)
 {
   var start_parent_array = new Array();
-  var start_node = tree_search(root_node, start_node_index);
-  var end_node = tree_search(root_node, end_node_index);
 
   for(var elem = start_node; elem.parent_node != null; elem = elem.parent_node)
   {
-    start_parent_array.push(elem.index);
+    start_parent_array.push(elem.id);
   }
 
   for(var elem = end_node; elem.parent_node != null; elem = elem.parent_node)
   {
-    if(start_parent_array.includes(elem.index))
-      return tree_search(root_node, elem.index);
+    if(start_parent_array.includes(elem.id))
+      return elem;
   }
 }
 

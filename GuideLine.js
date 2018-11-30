@@ -41,13 +41,17 @@ function findSection(startX, startY){
 
 function traverse(node, Section){
 	if(node){
-		if(node.type == "Sigma" || node.type == "Integral"){
+		if(node.value == "Sigma" || node.value == "Integral"){
 			traverse(node.nodelist[0], new Section(Section.X, Section.H/2 + getSize(node), Section.W, Section.H/2 - getSize(node)));
 			traverse(node.nodelist[1], new Section(Section.X, Section.Y, Section.W, Section.H/2 - getSize(node)));
 			Section = drawGuideLine(Section.W, Section.Y, Section.W, Section.H, node);
 			traverse(node.nodelist[2], Section);
 		}
-		else if(숫자 or 연산자){
+		else if(node.type == ONLYDRAWABLE){
+			/* 루트 */
+		}
+
+		else{
 			traverse(node.nodelist[0], Section);
 			Section = drawGuideLine(Section.W, Section.Y, Section.W, Section.H, node);
 			traverse(node.nodelist[1], Section);
@@ -64,14 +68,14 @@ function drawGuideLine(X, Y, W, H, node){
 	context.lineWidth = 1;
 	context.setLineDash([3,1]);
 	context.strokeStyle = "rgb(255,0,0)";
-	
+
 	context.strokeRect(X,Y,getSize(node),H);
 	//context.fillText(node.value, X, Y + H / 2);
-	
+
 	SectionList.push(new Section(X,Y,getSize(node),H, node.NDtype, node));
 
 	context.stroke();
-	context.setLineDash([0]);		
+	context.setLineDash([0]);
 
 	return new Section(X+getSize(node), Y, W-getSize(node), H);
 }
@@ -122,7 +126,11 @@ function dropEnd(ev)
 	var node = findSection(event.clientX, event.clientY);
 
 	// 트리에 노드 추가
-	
+	/*
+	insert(node, type, value);
+	//type = MathTree 참고
+	//value = sigma, integral, 4, 5..
+	*/
 
 	console.log(exprType);
 }
