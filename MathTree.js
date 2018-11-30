@@ -13,7 +13,7 @@ const ROOTNODE        =   1005;
 function init_tree()
 {
   root_node = new calculate_tree_root();
-  push_to_nodelist(root_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", root_node);
+  push_to_nodelist(root_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", root_node));
 
   return root_node;
 }
@@ -44,9 +44,9 @@ function insert(current_node, type, value)
 
   //sigma / integral 전처리
   if(type == NONARITHMETIC && ( value == "sigma" || value == "integral")){
-    push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node);
-    push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node);
-    push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node);
+    push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node));
+    push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node));
+    push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node));
   }
 
   insert_node(current_node, target_node);
@@ -102,6 +102,7 @@ function __insert_ND2NA(source_node, target_node)
 {
   source_node.type = NONARITHMETIC;
   source_node.value = target_node.value;
+  source_node.nodelist = target_node.nodelist;
 }
 
 function search_common_parent(start_node, end_node)

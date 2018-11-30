@@ -83,21 +83,23 @@ function drawGuideLine(X, Y, W, H, node){
 
 function getSize(node){
 	var type = node.type;
+	var value = node.value;
 	var unit = 20;
-	if(type == "ND"){
+
+	if(type == NOTDEFINED){
 		return unit;
 	}
-	else if(type == "Arithmetic"){	// + - * /
+	else if(type == ARITHMETIC){	// + - * /
 		return unit;
 	}
-	else if(type == "Sigma" || type == "Integral"){
+	else if(value == "Sigma" || value == "Integral"){
 		return unit * 1.5;
 	}
-	else if(type == "number"){
+	else if(type == NONARITHMETIC){
 		return node.value.length / 5 * unit;
 	}
 	else{
-		console.log("Size Error : Unknown Type");
+		console.log("Size Error : Unknown Type", node);
 	}
 }
 
@@ -123,16 +125,19 @@ function dropEnd(ev)
 	ev.preventDefault();
 
 	var exprType = ev.dataTransfer.getData("text");
-	var node = findSection(event.clientX, event.clientY);
+
+var node = findSection(event.clientX, event.clientY);
 
 	// 트리에 노드 추가
-	/*
-	insert(node, type, value);
+	insert(node, NONARITHMETIC, exprType);
+	traverse(root_node.nodelist[0],new Section(0,0,canvas.width,canvas.height))
 	//type = MathTree 참고
 	//value = sigma, integral, 4, 5..
-	*/
+
+
 
 	console.log(exprType);
+	console.log(root_node);
 }
 
 
@@ -150,6 +155,8 @@ window.onload = function() {
 // Initial Setting
 function Init(){
 
+	init_tree();
+
 	// Check General or Matrix
 	// var target = document.getElementById("FormulaSelectBox");
 	// GuideLineType = target.options[target.selectedIndex].value;
@@ -161,13 +168,15 @@ function Init(){
 	// 	document.getElementById("MatrixRowSelectBox").disabled = false;
 	// 	document.getElementById("MatrixColSelectBox").disabled = false;
 	// }
-
-	// Initialize SectionList
-	SectionList = new Array();
-
 	canvas = document.getElementById("chart");
 	context = canvas.getContext('2d');
+	// Initialize SectionList
+	SectionList = new Array();
+	SectionList.push(new Section(0,0,canvas.width, canvas.height, true, root_node.nodelist[0]));
 
-	// Tree Init
-	init_tree();
+}
+
+function allowDrop(ev)
+{
+	ev.preventDefault();
 }
