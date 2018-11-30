@@ -135,7 +135,6 @@ var node = findSection(event.clientX, event.clientY);
 	//value = sigma, integral, 4, 5..
 
 
-
 	console.log(exprType);
 	console.log(root_node);
 }
