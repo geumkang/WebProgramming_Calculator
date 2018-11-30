@@ -56,8 +56,9 @@ function traverse(node, section){
 		}
 		else if(node.value == "integral"){
 			section = drawGuideLine(section.X, section.Y, section.W, section.H, node);
-			traverse(node.nodelist[0], new Section(section.X, section.Y+section.H/2, section.W, section.H/2);
-			traverse(node.nodelist[1], new Section(section.X, section.Y+section.H/2, section.W, section.H/2);
+			traverse(node.nodelist[0], new Section(section.X, section.Y+section.H/2, getSize(node), section.H/2));
+			traverse(node.nodelist[1], new Section(section.X, section.Y, getSize(node), section.H/2));
+			traverse(node.nodelist[2], new Section(section.X+getSize(node.nodelist[2]), section.Y, section.W-getSize(node), section.H));
 		}
 		else if(node.type == ONLYDRAWABLE){
 			/* 루트 */
@@ -75,7 +76,8 @@ function traverse(node, section){
 
 
 function drawGuideLine(X, Y, W, H, node){
-	//context.clearRect(0, 0, canvas.width, canvas.height);
+	var type = node.type;
+	var value = node.value;
 
 	context.beginPath();
 	context.lineWidth = 1;
@@ -83,9 +85,24 @@ function drawGuideLine(X, Y, W, H, node){
 	context.strokeStyle = "rgb(255,0,0)";
 	console.log(getSize(node) + "~!~!~");
 	context.strokeRect(X,Y,getSize(node),H);
-	//context.fillText(node.value, X, Y + H / 2);
-
 	SectionList.push(new Section(X,Y,getSize(node),H, node.NDtype, node));
+
+	if(value == "sigma"){
+		var img = new Image();
+		img.src = document.getElementById("sigma").src;
+		context.drawImage(img, 0, 0, img.width, img.height, X, Y + H/2 - getSize(node)/2, getSize(node), getSize(node));
+	}
+	else if(value == "integral"){
+		var img = new Image();
+		img.src = document.getElementById("integral").src;
+		context.drawImage(img, 0, 0, img.width, img.height, X, Y+10, getSize(node), H-20);
+	}
+	else{
+		context.fillText(node.value, X, Y, getSize(node), H);
+	}
+
+	
+	
 
 	context.stroke();
 	context.setLineDash([0]);
@@ -100,7 +117,7 @@ function getSize(node){
 	var unit = 50;
 
 	if(type == NOTDEFINED){
-		return unit;
+		return unit*2;
 	}
 	else if(type == ARITHMETIC){	// + - * /
 		return unit;
@@ -143,6 +160,7 @@ function dragStart(ev)
 function dropEnd(ev)
 {
 	ev.preventDefault();
+	context.clearRect(0, 0, canvas.width, canvas.height);
 
 	var exprType = ev.dataTransfer.getData("text");
 	var node = findSection(event.clientX, event.clientY);
