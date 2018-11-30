@@ -1,45 +1,83 @@
 var root_node;
 
-//Typelist : Sigma, Integral, Plus, Minus ... etc
-//Integral : integrate sin x dx from x=0 to pi
-//Sigma : sigma k^2 from k=1 to 10
-//plain numeric : 1, 2, 3 ... etc(plain_text)
-//ND = Not defined
+
+var identifier = 0;
+
+/*TYPEDEF*/
+const ARITHMETIC      =   1001;
+const NONARITHMETIC   =   1002;
+const ONLYDRAWABLE    =   1003;
+const NOTDEFINED      =   1004;
+const ROOTNODE        =   1005;
+
 function init_tree()
 {
-  root_node = new calculate_tree_root("root", null);
-  push_to_nodelist(root_node, new calculate_tree(0, "ND", root_node));
-  console.log("fine");
+  root_node = new calculate_tree_root();
+  push_to_nodelist(root_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", root_node));
+
+  return root_node;
 }
 
-//1. Make Sections
-//2. Make calculate_tree with type and parent_node
-//3. Add child node with calculate_tree_i.nodelist.push();
-//4. Repeat 3 until all child node is added.
-function calculate_tree_root(type, parent_node)
+function calculate_tree_root()
 {
-    this.index = -1;
+    this.parent_node = null;
+		this.type = ROOTNODE;
+		this.nodelist = new Array();
+    this.value = null;
+
+    this.id = identifier++;
+}
+
+function calculate_tree(type, value, parent_node)
+{
     this.parent_node = parent_node;
 		this.type = type;
 		this.nodelist = new Array();
-    this.value = 0;
-}
-
-function calculate_tree(index, type, parent_node)
-{
-    this.index = index;
-    this.parent_node = parent_node;
-		this.type = type;
-		this.nodelist = new Array();
-}
-
-function calculate_tree(index, type, parent_node, value)
-{
-    this.index = index;
-    this.parent_node = parent_node;
-		this.type = type;
     this.value = value;
-		this.nodelist = new Array();
+
+    this.id = identifier++;
+}
+
+function insert(current_node, type, value)
+{
+  var target_node = new calculate_tree(type, value, null);
+
+  //sigma / integral 전처리
+  if(type == NONARITHMETIC && ( value == "sigma" || value == "integral")){
+    push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node));
+    push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node));
+    push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node));
+  }
+
+  insert_node(current_node, target_node);
+}
+
+/*
+current_node : currently clicked node
+target_node : node to insert
+*/
+function insert_node(current_node, target_node)
+{
+  //Validation
+  if(current_node.type == ARITHMETIC
+    || ( current_node.type == NONARITHMETIC && target_node.type == NONARITHMETIC ) ){
+
+    return 0;
+  }
+
+  else if(current_node.type == NONARITHMETIC && target_node.type == ARITHMETIC){
+
+    __insert_NA2A(current_node, target_node);
+
+    return 1;
+  }
+
+  else if(current_node.type == NOTDEFINED && target_node.type == NONARITHMETIC){
+
+    __insert_ND2NA(current_node, target_node);
+
+    return 1;
+  }
 }
 
 function calculate_tree_toString(node)
@@ -97,36 +135,43 @@ function calculate_tree_toString(node)
 }
 
 //DEAD FUNCTION
-function node_replace(source_node, target_node)
+function __insert_NA2A(source_node, target_node)
 {
-  var temp_index = source_node.index;
-  var temp_parent = source_node.parent_node;
+  var parent_node = source_node.parent_node;
 
-  for(var i = 0; i < temp_parent.nodelist.length; i++)
-  {
-    if(temp_parent.nodelist[i].index == target_node.index)
-      temp_parent.nodelist[i] = target_node;
+  for(var i = 0; i < parent_node.nodelist.size(); i++){
+    if(parent_node.nodelist[i].id == source_node.id){
+      parent_node.nodelist[i] = target_node;
+      target_node.parent_node = parent_node;
+      source_node.parent_node = target_node;
+      push_to_nodelist(target_node, source_node);
+      push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node));
+
+      break;
+    }
   }
-
-  target_node.parent_node = temp_parent;
-  target_node.index = temp_index;
 }
 
-function search_common_parent(start_node_index, end_node_index)
+function __insert_ND2NA(source_node, target_node)
+{
+  source_node.type = NONARITHMETIC;
+  source_node.value = target_node.value;
+  source_node.nodelist = target_node.nodelist;
+}
+
+function search_common_parent(start_node, end_node)
 {
   var start_parent_array = new Array();
-  var start_node = tree_search(root_node, start_node_index);
-  var end_node = tree_search(root_node, end_node_index);
 
   for(var elem = start_node; elem.parent_node != null; elem = elem.parent_node)
   {
-    start_parent_array.push(elem.index);
+    start_parent_array.push(elem.id);
   }
 
   for(var elem = end_node; elem.parent_node != null; elem = elem.parent_node)
   {
-    if(start_parent_array.includes(elem.index))
-      return tree_search(root_node, elem.index);
+    if(start_parent_array.includes(elem.id))
+      return elem;
   }
 }
 
