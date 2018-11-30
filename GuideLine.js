@@ -41,37 +41,37 @@ function findSection(startX, startY){
 
 function traverse(node, section){
 	if(node){
-		console.log("node : " + node.nodelist);
-		console.log("SectionX : " + section.X);
-		console.log("SectionY : " + section.Y);
-		console.log("SectionW : " + section.W);
-		console.log("SectionH : " + section.H);
+		// console.log("node : " + node.nodelist);
+		// console.log("SectionX : " + section.X);
+		// console.log("SectionY : " + section.Y);
+		// console.log("SectionW : " + section.W);
+		// console.log("SectionH : " + section.H);
 
 		if(node.value == "sigma"){
 			console.log(getSize(node));
 			traverse(node.nodelist[0], new Section(section.X, section.H/2 + getSize(node)/2, getSize(node), section.H/2 - getSize(node)/2));
 			traverse(node.nodelist[1], new Section(section.X, section.Y, getSize(node), section.H/2 - getSize(node)/2));
 			section = drawGuideLine(section.X, section.Y, section.W, section.H, node);
-			traverse(node.nodelist[2], section);
+			secction = traverse(node.nodelist[2], section);
 		}
 		else if(node.value == "integral"){
 			section = drawGuideLine(section.X, section.Y, section.W, section.H, node);
 			traverse(node.nodelist[0], new Section(section.X, section.Y+section.H/2, getSize(node), section.H/2));
 			traverse(node.nodelist[1], new Section(section.X, section.Y, getSize(node), section.H/2));
-			traverse(node.nodelist[2], new Section(section.X+getSize(node.nodelist[2]), section.Y, section.W-getSize(node), section.H));
+			section = traverse(node.nodelist[2], new Section(section.X+getSize(node.nodelist[2]), section.Y, section.W-getSize(node), section.H));
 		}
 		else if(node.type == ONLYDRAWABLE){
 			/* 루트 */
 		}
 
 		else{
-			traverse(node.nodelist[0], section);
+			section = traverse(node.nodelist[0], section);
 			console.log("드러옴");
 			section = drawGuideLine(section.X, section.Y, section.W, section.H, node);
-			traverse(node.nodelist[1], section);
+			section = traverse(node.nodelist[1], section);
 		}
 	}
-	return;
+	return section;
 }
 
 
@@ -85,7 +85,7 @@ function drawGuideLine(X, Y, W, H, node){
 	context.strokeStyle = "rgb(255,0,0)";
 	console.log(getSize(node) + "~!~!~");
 	context.strokeRect(X,Y,getSize(node),H);
-	SectionList.push(new Section(X,Y,getSize(node),H, node.NDtype, node));
+	SectionList.push(new Section(X,Y,getSize(node),H, true, node));
 
 	if(value == "sigma"){
 		var img = new Image();
@@ -98,7 +98,8 @@ function drawGuideLine(X, Y, W, H, node){
 		context.drawImage(img, 0, 0, img.width, img.height, X, Y+10, getSize(node), H-20);
 	}
 	else{
-		context.fillText(node.value, X, Y, getSize(node), H);
+		console.log("노드밸류 : " + node.value);
+		context.fillText(node.value, X, Y + H/2 - 10, getSize(node), H);
 	}
 
 	
@@ -112,28 +113,31 @@ function drawGuideLine(X, Y, W, H, node){
 
 
 function getSize(node){
-	var type = node.type;
-	var value = node.value;
-	var unit = 50;
+	if(node){
+		var type = node.type;
+		var value = node.value;
+		var unit = 50;
 
-	if(type == NOTDEFINED){
-		return unit*2;
+		if(type == NOTDEFINED){
+			return unit*2;
+		}
+		else if(type == ARITHMETIC){	// + - * /
+			return unit;
+		}
+		else if(value == "sigma"){
+			return unit * 3;
+		}
+		else if(value == "integral"){
+			return unit;
+		}
+		else if(type == NONARITHMETIC){
+			return node.value.length / 2 * unit;
+		}
+		else{
+			console.log("Size Error : Unknown Type", node);
+		}
 	}
-	else if(type == ARITHMETIC){	// + - * /
-		return unit;
-	}
-	else if(value == "sigma"){
-		return unit * 3;
-	}
-	else if(value == "integral"){
-		return unit;
-	}
-	else if(type == NONARITHMETIC){
-		return node.value.length / 2 * unit;
-	}
-	else{
-		console.log("Size Error : Unknown Type", node);
-	}
+	else return 0;
 }
 
 
@@ -164,6 +168,7 @@ function dropEnd(ev)
 
 	var exprType = ev.dataTransfer.getData("text");
 	var node = findSection(event.clientX, event.clientY);
+	console.log("노드" + node);
 	if(node != -1){
 		if(exprType == "plain_text"){
 			insert(node, NONARITHMETIC, document.getElementById(exprType).value);	
@@ -208,6 +213,7 @@ function Init(){
 	// }
 	canvas = document.getElementById("chart");
 	context = canvas.getContext('2d');
+	context.font = "20px Georgia";
 	console.log("width: " + canvas.width + "  height: " + canvas.height);
 	// Initialize SectionList
 	SectionList = new Array();
