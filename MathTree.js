@@ -51,16 +51,17 @@ function insert(current_node, type, value)
     push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node));
     push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node));
     insert_node(current_node, target_node);
+    return;
   }
-  //복합사칙연산
+  //복합사칙연
   else if(type == NONARITHMETIC){
     for(var i = 0; i < _value.length; i++){
       if(_value[i] == "+" || _value[i] == "-" || _value[i] == "*" || _value[i] == "/"){
-        insert(nodeptr, new calculate_tree(ARITHMETIC, _value[i], nodeptr.parent_node));
-        nodeptr = nodeptr.nodelist[1];
+        insert_node(nodeptr, new calculate_tree(ARITHMETIC, _value[i], null));
+        nodeptr = nodeptr.parent_node.nodelist[1];
       }
-      else{
-        insert(nodeptr, new calculate_tree(NONARITHMETIC, _value[i], nodeptr.parent_node));
+      else if(_value[i] != ""){
+        insert_node(nodeptr, new calculate_tree(NONARITHMETIC, _value[i], null));
       }
     }
   }
@@ -94,66 +95,14 @@ function insert_node(current_node, target_node)
   }
 }
 
-function calculate_tree_toString(node)
-{
-  var math_expr = "";
-
-  //console.log(node.type);
-
-  if(node.type == "ND" && node.nodelist.length == 0)
-    return "ND";
-
-  if(node.type == "root" || node.type == "ND")
-  {
-    return calculate_tree_toString(node.nodelist[0]);
-  }
-
-  //X, x, 1, 234 ... plain text.
-  // if(node.type == "plain_text")
-  //  math_expr = node.nodelist[0];
-
-  //regex => type list[0] from list[1] to list[2]
-  //Typelist : Sigma, Integral, Lim
-  else if(node.type == "Sigma" || node.type == "Integral")
-  {
-    math_expr = "("
-    + node.type + " "
-    + calculate_tree_toString(node.nodelist[0])
-    + " from "
-    + calculate_tree_toString(node.nodelist[1])
-    + " to "
-    + calculate_tree_toString(node.nodelist[2])
-    + ")"
-  }
-
-  //regx => list[0] type list[1]
-  //Typelist : Plus, Minus, Multiply, Divide, Equal
-  else if(node.type == "Arithmetic")
-  {
-    for(var i = 0; i < node.nodelist.length; i++)
-    {
-      math_expr += node.nodelist[i].value;
-    }
-  }
-
-  else if(node.type == "plain_text")
-  {
-    math_expr = node.value;
-  }
-
-  else
-  {
-    math_expr = node.type;
-  }
-  return math_expr;
-}
-
 //DEAD FUNCTION
 function __insert_NA2A(source_node, target_node)
 {
   var parent_node = source_node.parent_node;
 
-  for(var i = 0; i < parent_node.nodelist.size(); i++){
+  console.log(parent_node.nodelist.length);
+
+  for(var i = 0; i < parent_node.nodelist.length; i++){
     if(parent_node.nodelist[i].id == source_node.id){
       parent_node.nodelist[i] = target_node;
       target_node.parent_node = parent_node;
