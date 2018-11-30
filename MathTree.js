@@ -40,6 +40,9 @@ function calculate_tree(type, value, parent_node)
 
 function insert(current_node, type, value)
 {
+
+  var _value = StringTokenizerForExpr(value);
+  var nodeptr = current_node;
   var target_node = new calculate_tree(type, value, null);
 
   //sigma / integral 전처리
@@ -47,9 +50,20 @@ function insert(current_node, type, value)
     push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node));
     push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node));
     push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "NOT DEFINED", target_node));
+    insert_node(current_node, target_node);
   }
-
-  insert_node(current_node, target_node);
+  //복합사칙연산
+  else if(type == NONARITHMETIC){
+    for(var i = 0; i < _value.length; i++){
+      if(_value[i] == "+" || _value[i] == "-" || _value[i] == "*" || _value[i] == "/"){
+        insert(nodeptr, new calculate_tree(ARITHMETIC, _value[i], nodeptr.parent_node));
+        nodeptr = nodeptr.nodelist[1];
+      }
+      else{
+        insert(nodeptr, new calculate_tree(NONARITHMETIC, _value[i], nodeptr.parent_node));
+      }
+    }
+  }
 }
 
 /*
