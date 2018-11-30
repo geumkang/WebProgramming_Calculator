@@ -66,7 +66,6 @@ function traverse(node, section){
 
 		else{
 			section = traverse(node.nodelist[0], section);
-			console.log("드러옴");
 			section = drawGuideLine(section.X, section.Y, section.W, section.H, node);
 			section = traverse(node.nodelist[1], section);
 		}
@@ -168,9 +167,11 @@ function dropEnd(ev)
 
 	var exprType = ev.dataTransfer.getData("text");
 	var node = findSection(event.clientX, event.clientY);
-	console.log("노드" + node);
+	//console.log("노드값은 " + node.value);
+	console.log(SectionList);
 	if(node != -1){
 		if(exprType == "plain_text"){
+		
 			insert(node, NONARITHMETIC, document.getElementById(exprType).value);	
 		}
 		else if(exprType == "plus" || exprType == "minus" || exprType == "multiply" || exprType == "divide"){
@@ -180,6 +181,8 @@ function dropEnd(ev)
 			insert(node, NONARITHMETIC, exprType);
 		}
 		console.log(root_node);
+		SectionList = new Array();
+		SectionList.push(new Section(0,0,canvas.width,canvas.height));
 		traverse(root_node.nodelist[0], new Section(0,0,canvas.width,canvas.height));
 	}
 }
