@@ -48,17 +48,32 @@ function traverse(node, section){
 		// console.log("SectionH : " + section.H);
 
 		if(node.value == "sigma"){
+			var max = 0;
+			var temp, temp2;
 			console.log(getSize(node));
-			traverse(node.nodelist[0], new Section(section.X, section.H/2 + getSize(node)/2, getSize(node), section.H/2 - getSize(node)/2));
-			traverse(node.nodelist[1], new Section(section.X, section.Y, getSize(node), section.H/2 - getSize(node)/2));
+			temp = traverse(node.nodelist[0], new Section(section.X, section.H/2 + getSize(node)/2, getSize(node), section.H/2 - getSize(node)/2));
+			temp2 = traverse(node.nodelist[1], new Section(section.X, section.Y, getSize(node), section.H/2 - getSize(node)/2));
 			drawGuideLine(section.X, section.Y+section.H/2-getSize(node)/2, section.W, getSize(node), node);
-			secction = traverse(node.nodelist[2], new Section(section.X + getSize(node), section.Y, section.W - getSize(node), section.H));
+			if(max < getSize(node) - temp.W)
+				max = getSize(node) - temp.W;
+			if(max < getSize(node) - temp2.W)
+				max = getSize(node) - temp2.W;
+			if(max < getSize(node))
+				max = getSize(node);
+			section = traverse(node.nodelist[2], new Section(section.X + max, section.Y, section.W - max, section.H));
+			
 		}
 		else if(node.value == "integral"){
+			var max = 0;
+			var temp, temp2;
 			section = drawGuideLine(section.X, section.Y, section.W, section.H, node);
-			traverse(node.nodelist[0], new Section(section.X, section.Y+section.H/2, getSize(node), section.H/2));
-			traverse(node.nodelist[1], new Section(section.X, section.Y, getSize(node), section.H/2));
-			section = traverse(node.nodelist[2], new Section(section.X+getSize(node.nodelist[2]), section.Y, section.W-getSize(node), section.H));
+			temp = traverse(node.nodelist[0], new Section(section.X, section.Y+section.H/2, getSize(node), section.H/2));
+			temp2 = traverse(node.nodelist[1], new Section(section.X, section.Y, getSize(node), section.H/2));
+			if(max < getSize(node) - temp.W)
+				max = getSize(node) - temp.W;
+			if(max < getSize(node) - temp2.W)
+				max = getSize(node) - temp2.W;
+			section = traverse(node.nodelist[2], new Section(section.X+max, section.Y, section.W-max, section.H));
 		}
 		else if(node.type == ONLYDRAWABLE){
 			/* 루트 */
@@ -98,11 +113,8 @@ function drawGuideLine(X, Y, W, H, node){
 	}
 	else{
 		console.log("노드밸류 : " + node.value);
-		context.fillText(node.value, X, Y + H/2 - 10, getSize(node), H);
+		context.fillText(node.value, X, Y + H/2, getSize(node), H);
 	}
-
-	
-	
 
 	context.stroke();
 	context.setLineDash([0]);
