@@ -1,6 +1,7 @@
 var SectionList = new Array();
 var mouseSection = -1;
 var GuideLineMode = true;
+var DashColor = "rgb(255,0,0)"
 //////////////////////////////////////////////////
 //
 // Section Related Function, Class
@@ -54,6 +55,7 @@ function findSection(startX, startY){
 //////////////////////////////////////////////////
 
 function traverse(node, section){
+	var size = getSize(node);
 	if(node){
 		// console.log("node : " + node.nodelist);
 		// console.log("SectionX : " + section.X);
@@ -64,32 +66,32 @@ function traverse(node, section){
 		if(node.value == "sigma"){
 			var max = 0;
 			var temp, temp2;
-			console.log(getSize(node));
-			temp = traverse(node.nodelist[0], new Section(section.X, section.H/2 + getSize(node)/2, getSize(node), section.H/2 - getSize(node)/2));
-			temp2 = traverse(node.nodelist[1], new Section(section.X, section.Y, getSize(node), section.H/2 - getSize(node)/2));
-			drawGuideLine(section.X, section.Y+section.H/2-getSize(node)/2, section.W, getSize(node), node);
-			if(max < getSize(node) - temp.W)
-				max = getSize(node) - temp.W;
-			if(max < getSize(node) - temp2.W)
-				max = getSize(node) - temp2.W;
-			if(max < getSize(node))
-				max = getSize(node);
-			section = traverse(node.nodelist[2], new Section(section.X + max, section.Y, section.W - max, section.H));
-			
+			size = section.H*0.3;
+			temp = traverse(node.nodelist[0], new Section(section.X, section.Y + section.H/2 + size/2, size, section.H/2 - size/2));
+			temp2 = traverse(node.nodelist[1], new Section(section.X, section.Y, size, section.H/2 - size/2));
+			drawGuideLine(section.X, section.Y + section.H/2 - size/2, size, size, node);
+			if(max < size - temp.W)
+				max = size - temp.W;
+			if(max < size - temp2.W)
+				max = size - temp2.W;
+			if(max < size)
+				max = size;
+			section = traverse(node.nodelist[2], new Section(section.X + max, section.Y, section.W - max, section.H));	
 		}
 		else if(node.value == "integral"){
 			var max = 0;
 			var temp, temp2;
 			section = drawGuideLine(section.X, section.Y, section.W, section.H, node);
-			temp = traverse(node.nodelist[0], new Section(section.X, section.Y+section.H/2, getSize(node), section.H/2));
-			temp2 = traverse(node.nodelist[1], new Section(section.X, section.Y, getSize(node), section.H/2));
-			if(max < getSize(node) - temp.W)
-				max = getSize(node) - temp.W;
-			if(max < getSize(node) - temp2.W)
-				max = getSize(node) - temp2.W;
+			temp = traverse(node.nodelist[0], new Section(section.X, section.Y+section.H/2+section.H/4, size, section.H/4));
+			temp2 = traverse(node.nodelist[1], new Section(section.X, section.Y, size, section.H/4));
+			if(max < size - temp.W)
+				max = size - temp.W;
+			if(max < size - temp2.W)
+				max = size - temp2.W;
 			section = traverse(node.nodelist[2], new Section(section.X+max, section.Y, section.W-max, section.H));
 		}
 		else if(node.type == ONLYDRAWABLE){
+			
 			/* 루트 */
 		}
 
@@ -106,26 +108,31 @@ function traverse(node, section){
 function drawGuideLine(X, Y, W, H, node){
 	var type = node.type;
 	var value = node.value;
+	var size = getSize(node);
+	if(value == "sigma") size = W;
 
-	contextDash.strokeStyle = "rgb(255,0,0)";
-	if(GuideLineMode) contextDash.strokeRect(X,Y,getSize(node),H);
-	SectionList.push(new Section(X,Y,getSize(node),H, true, node));
+	contextDash.strokeStyle = DashColor;
+	if(GuideLineMode) contextDash.strokeRect(X,Y,size,H);
+	SectionList.push(new Section(X,Y,size,H, true, node));
 
 	if(value == "sigma"){
 		var img = new Image();
 		img.src = document.getElementById("sigma").src;
-		context.drawImage(img, 0, 0, img.width, img.height, X, Y + H/2 - getSize(node)/2, getSize(node), getSize(node));
-	}
+		context.drawImage(img, 0, 0, img.width, img.height, X, Y, W, H);
+	}	
 	else if(value == "integral"){
 		var img = new Image();
 		img.src = document.getElementById("integral").src;
-		context.drawImage(img, 0, 0, img.width, img.height, X, Y+10, getSize(node), H-20);
+		context.drawImage(img, 0, 0, img.width, img.height, X, Y+10, size, H-20);
+	}
+	else if(type == ONLYDRAWABLE){
+		//context.fillText(node.value, X, Y + H/2, size, H);
 	}
 	else{
-		context.fillText(node.value, X, Y + H/2, getSize(node), H);
+		context.fillText(node.value, X, Y + H/2, size, H);
 	}
 
-	return new Section(X+getSize(node), Y, W-getSize(node), H);
+	return new Section(X+size, Y, W-size, H);
 }
 
 
@@ -210,14 +217,14 @@ function mouseMove(ev){
 		
 		if(mouseSection == -1){
 			contextDash.clearRect(0, 0, canvas.width, canvas.height);
-			contextDash.strokeStyle = "rgb(255,0,0)";
+			contextDash.strokeStyle = DashColor;
 			contextDash.strokeRect(current.X,current.Y,current.W,current.H);
 			mouseSection = current;
 		}
 		else{
 			if(mouseSection != current){
 				contextDash.clearRect(0, 0, canvas.width, canvas.height);
-				contextDash.strokeStyle = "rgb(255,0,0)";
+				contextDash.strokeStyle = DashColor;
 				contextDash.strokeRect(current.X,current.Y,current.W,current.H);
 				mouseSection = current;
 			}
@@ -225,6 +232,22 @@ function mouseMove(ev){
 	}
 }
 
+function drawStart(ev){
+	DashColor = "rgb(0,0,255)"
+	contextDash.strokeStyle = DashColor;
+	var node = findSectionNode(event.offsetX, event.offsetY);
+	var section = findSection(event.offsetX, event.offsetY);
+	console.log(node.parent_node);
+	for(var i = SectionList.length - 1; i > -1; i--){
+		if(search_common_parent(node,SectionList[i].node) == node){
+			contextDash.strokeRect(SectionList[i].X,SectionList[i].Y,SectionList[i].W,SectionList[i].H);
+		}
+	}
+}
+
+function drawEnd(ev){
+	DashColor = "rgb(255,0,0)";
+}
 //////////////////////////////////////////////////
 //
 // Initizlize Settings.
@@ -261,7 +284,7 @@ function GuideLineModeChanged(){
 	}
 	else if(GuideLineMode == false){
 		contextDash.clearRect(0, 0, canvas.width, canvas.height);
-		contextDash.strokeStyle = "rgb(255,0,0)";
+		contextDash.strokeStyle = DashColor;
 		for(var i = 0; i < SectionList.length; i++){
 			contextDash.strokeRect(SectionList[i].X,SectionList[i].Y,SectionList[i].W,SectionList[i].H);
 		}

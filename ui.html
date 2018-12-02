@@ -25,7 +25,11 @@
 			
 			<div>
 				<canvas id="chart" class="canvas" width="1200px" height="500px"
-		        	ondragover="allowDrop(event)" onmousemove="mouseMove(event)" ondrop="dropEnd(event)" 
+		        	onmousedown="drawStart(event)"
+		        	onmouseup="drawEnd(event)" 
+		        	ondragover="allowDrop(event)" 
+		        	onmousemove="mouseMove(event)" 
+		        	ondrop="dropEnd(event)"
 				></canvas>
 				<canvas id="chart2" class="canvas2" width="1200px" height="500px"></canvas>
 			</div>
