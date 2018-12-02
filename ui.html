@@ -10,15 +10,24 @@
 			<h1><strong>Calculator</strong></h1>
 		</div>
 			
-		<div id="box" class="box" style="width: 100%; margin-left: 10%">
+		<div id="box" class="box" style="width: 100%; margin-left: 10%; margin-right: 10%">
 			<div>
 				<button type="button"> General Formula </button>
 				<button type="button"> Array Formula </button>
+				<span style="position: relative; left: 768px">
+					<label>Guide Line Mode</label>
+					<select id="GuidLineModeSelectBox" onchange="GuideLineModeChanged()">
+						<option value="1" selected="selected">Always</option>
+				    	<option value="2">Optional</option>
+					</select>
+				</span>
 			</div>
+			
 			<div>
 				<canvas id="chart" class="canvas" width="1200px" height="500px"
-		        	ondragover="allowDrop(event)" ondrop="dropEnd(event)"
+		        	ondragover="allowDrop(event)" onmousemove="mouseMove(event)" ondrop="dropEnd(event)" 
 				></canvas>
+				<canvas id="chart2" class="canvas2" width="1200px" height="500px"></canvas>
 			</div>
 		</div>	
 
@@ -49,17 +58,6 @@
 			</div>
 		</div>
 
-
-
-		<!--
-		<div class="box">
-            <h1>content</h1>
-        </div>
-
-        <div class="box">
-            <h1>sidebar</h1>
-        </div>
-    	-->
 		<script src="./GuideLine.js"></script>
 		<script src="./MathTree.js"></script>
 		<script src="./global_button_status.js"></script>

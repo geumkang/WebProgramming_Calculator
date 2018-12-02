@@ -1,5 +1,6 @@
 var SectionList = new Array();
-
+var mouseSection = -1;
+var GuideLineMode = true;
 //////////////////////////////////////////////////
 //
 // Section Related Function, Class
@@ -12,18 +13,31 @@ function Section(X, Y, W, H, isEditable, node){
 	this.Y = Y;							// Y 좌표(시작점)
 	this.W = W;							// 너비
 	this.H = H;							// 높이
-	this.isEditable = isEditable;		// 필기 가능 여부
+	this.isEditable = isEditable;		// 드롭 가능 여부
 	this.node = node;
 }
 
 // Check which Section the current cursor is in
-function findSection(startX, startY){
+function findSectionNode(startX, startY){
 	//console.log(startX + " " + startY);
 	//console.log(SectionList[0].X + " " + SectionList[0].Y + " " + SectionList[0].W + " " + SectionList[0].H + " " );
 	for(var i = SectionList.length-1; i >= 0 ; i--){
 		if(SectionList[i].X < startX && SectionList[i].X + SectionList[i].W > startX
 			&& SectionList[i].Y < startY && SectionList[i].Y + SectionList[i].H > startY){
 			return SectionList[i].node;
+		}
+		else{
+
+		}
+	}
+	return -1;
+}
+
+function findSection(startX, startY){
+	for(var i = SectionList.length-1; i >= 0 ; i--){
+		if(SectionList[i].X < startX && SectionList[i].X + SectionList[i].W > startX
+			&& SectionList[i].Y < startY && SectionList[i].Y + SectionList[i].H > startY){
+			return SectionList[i];
 		}
 		else{
 
@@ -93,12 +107,8 @@ function drawGuideLine(X, Y, W, H, node){
 	var type = node.type;
 	var value = node.value;
 
-	context.beginPath();
-	context.lineWidth = 1;
-	context.setLineDash([3,1]);
-	context.strokeStyle = "rgb(255,0,0)";
-	console.log(getSize(node) + "~!~!~");
-	context.strokeRect(X,Y,getSize(node),H);
+	contextDash.strokeStyle = "rgb(255,0,0)";
+	if(GuideLineMode) contextDash.strokeRect(X,Y,getSize(node),H);
 	SectionList.push(new Section(X,Y,getSize(node),H, true, node));
 
 	if(value == "sigma"){
@@ -112,12 +122,8 @@ function drawGuideLine(X, Y, W, H, node){
 		context.drawImage(img, 0, 0, img.width, img.height, X, Y+10, getSize(node), H-20);
 	}
 	else{
-		console.log("노드밸류 : " + node.value);
 		context.fillText(node.value, X, Y + H/2, getSize(node), H);
 	}
-
-	context.stroke();
-	context.setLineDash([0]);
 
 	return new Section(X+getSize(node), Y, W-getSize(node), H);
 }
@@ -161,6 +167,7 @@ function getSize(node){
 function allowDrop(ev)
 {
 	ev.preventDefault();
+	mouseMove(ev);
 }
 
 // 현재 Drag대상 Img의 id를 ev.dataTransfer에 저장  ~>  DragStart Event
@@ -175,15 +182,14 @@ function dragStart(ev)
 function dropEnd(ev)
 {
 	ev.preventDefault();
-	context.clearRect(0, 0, canvas.width, canvas.height);
-
+	
 	var exprType = ev.dataTransfer.getData("text");
-	var node = findSection(event.offsetX, event.offsetY);
-	//console.log("노드값은 " + node.value);
-	console.log(SectionList);
-	if(node != -1){
-		if(exprType == "plain_text"){
+	var node = findSectionNode(event.offsetX, event.offsetY);
 
+	if(node != -1){
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		contextDash.clearRect(0, 0, canvas.width, canvas.height);
+		if(exprType == "plain_text"){
 			insert(node, NONARITHMETIC, document.getElementById(exprType).value);	
 		}
 		else if(exprType == "plus" || exprType == "minus" || exprType == "multiply" || exprType == "divide"){
@@ -198,6 +204,26 @@ function dropEnd(ev)
 	}
 }
 
+function mouseMove(ev){
+	if(!GuideLineMode){
+		current = findSection(event.offsetX, event.offsetY);
+		
+		if(mouseSection == -1){
+			contextDash.clearRect(0, 0, canvas.width, canvas.height);
+			contextDash.strokeStyle = "rgb(255,0,0)";
+			contextDash.strokeRect(current.X,current.Y,current.W,current.H);
+			mouseSection = current;
+		}
+		else{
+			if(mouseSection != current){
+				contextDash.clearRect(0, 0, canvas.width, canvas.height);
+				contextDash.strokeStyle = "rgb(255,0,0)";
+				contextDash.strokeRect(current.X,current.Y,current.W,current.H);
+				mouseSection = current;
+			}
+		}
+	}
+}
 
 //////////////////////////////////////////////////
 //
@@ -214,24 +240,33 @@ window.onload = function() {
 function Init(){
 
 	init_tree();
-	// Check General or Matrix
-	// var target = document.getElementById("FormulaSelectBox");
-	// GuideLineType = target.options[target.selectedIndex].value;
-	// if(GuideLineType == 0){
-	// 	document.getElementById("MatrixRowSelectBox").disabled = true;
-	// 	document.getElementById("MatrixColSelectBox").disabled = true;
-	// }
-	// else{
-	// 	document.getElementById("MatrixRowSelectBox").disabled = false;
-	// 	document.getElementById("MatrixColSelectBox").disabled = false;
-	// }
+
 	canvas = document.getElementById("chart");
-	context = canvas.getContext('2d');
+	canvas2 = document.getElementById("chart2");
+	
+	context = canvas2.getContext('2d');
 	context.font = "20px Georgia";
-	console.log("width: " + canvas.width + "  height: " + canvas.height);
+
+	contextDash = canvas.getContext('2d');
+	contextDash.setLineDash([3,1]);
+	
 	// Initialize SectionList
 	SectionList = new Array();
 	SectionList.push(new Section(0,0,canvas.width, canvas.height, true, root_node.nodelist[0]));
+}
+
+function GuideLineModeChanged(){	
+	if(GuideLineMode == true){
+		contextDash.clearRect(0, 0, canvas.width, canvas.height);
+	}
+	else if(GuideLineMode == false){
+		contextDash.clearRect(0, 0, canvas.width, canvas.height);
+		contextDash.strokeStyle = "rgb(255,0,0)";
+		for(var i = 0; i < SectionList.length; i++){
+			contextDash.strokeRect(SectionList[i].X,SectionList[i].Y,SectionList[i].W,SectionList[i].H);
+		}
+	}
+	GuideLineMode = !GuideLineMode;
 }
 
 
