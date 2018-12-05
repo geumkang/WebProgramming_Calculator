@@ -93,10 +93,11 @@ function traverse(node, section){
 			section = traverse(node.nodelist[2], new Section(section.X+max, section.Y, section.W-max, section.H));
 		}
 		else if(node.type == UPPERNODE){
+			console.log("aasd");
 			section = drawGuideLine(section.X, section.Y, section.W, section.H, "(");
 			section = traverse(node.nodelist[0], new Section(section.X, section.Y, section.W, section.H));
 			section = drawGuideLine(section.X, section.Y, section.W, section.H, ")");
-			section = drawGuideLine(section.X, section.Y, section.W, section.H/2, node.nodelist[1]);
+			section = traverse(node.nodelist[1], new Section(section.X, section.Y, section.W, section.H));
 		}
 
 		else{
@@ -120,6 +121,7 @@ function drawGuideLine(X, Y, W, H, node){
 	SectionList.push(new Section(X,Y,size,H, true, node));
 
 	if(node == "(" || node == ")"){
+		console.log(node, ", ", size, ", ", H);
 		context.fillText(node, X, Y + H/2, size, H);
 	}
 	else if(value == "sigma"){
@@ -150,7 +152,7 @@ function getSize(node){
 		var unit = 50;
 
 		if(node == "(" || node == ")"){
-			return unit.length / 5 * unit;
+			return unit / 5;
 		}
 		else if(type == NOTDEFINED){
 			return unit*2;
@@ -272,6 +274,8 @@ function drawEnd(ev){
 	var CommonParentNode = search_common_parent(DragStartNode, Endnode);
 	insert(CommonParentNode, UPPERNODE, "pow");
 	
+	context.clearRect(0, 0, canvas.width, canvas.height);
+	contextDash.clearRect(0, 0, canvas.width, canvas.height);
 	SectionList = new Array();
 	traverse(root_node.nodelist[0], new Section(0,0,canvas.width,canvas.height));
 	

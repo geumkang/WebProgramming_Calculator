@@ -145,7 +145,7 @@ function __insert_ANY2UN(source_node, target_node)
       target_node.parent_node = parent_node;
       source_node.parent_node = target_node;
       push_to_nodelist(target_node, source_node);
-      push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "X", target_node));
+      push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "Drag Here!", target_node));
 
       break;
     }
