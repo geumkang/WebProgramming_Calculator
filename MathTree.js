@@ -40,7 +40,6 @@ function calculate_tree(type, value, parent_node)
 
 function insert(current_node, type, value)
 {
-
   var _value = StringTokenizerForExpr(value);
   var nodeptr = current_node;
   var target_node = new calculate_tree(type, value, null);
@@ -48,6 +47,7 @@ function insert(current_node, type, value)
   //upernode 전처리
   if(type == UPPERNODE){
     insert_node(current_node, target_node);
+    return;
   }
 
   //sigma / integral 전처리
@@ -81,7 +81,13 @@ target_node : node to insert
 function insert_node(current_node, target_node)
 {
   //Validation
-  if(current_node.type == ARITHMETIC
+
+  if(target_node.type == UPPERNODE){
+    __insert_ANY2UN(current_node, target_node);
+    return 1;
+  }
+
+  else if(current_node.type == ARITHMETIC
     || ( current_node.type == NONARITHMETIC && target_node.type == NONARITHMETIC ) ){
 
     return 0;
@@ -101,12 +107,6 @@ function insert_node(current_node, target_node)
     return 1;
   }
 
-  else if(target_node.type == UPPERNODE){
-    __insert_ANY2UN(current_node, target_node);
-
-    return 1;
-  }
-
   return 0;
 }
 
@@ -114,8 +114,6 @@ function insert_node(current_node, target_node)
 function __insert_NA2A(source_node, target_node)
 {
   var parent_node = source_node.parent_node;
-
-  console.log(parent_node.nodelist.length);
 
   for(var i = 0; i < parent_node.nodelist.length; i++){
     if(parent_node.nodelist[i].id == source_node.id){
@@ -137,7 +135,7 @@ function __insert_ND2NA(source_node, target_node)
   source_node.nodelist = target_node.nodelist;
 }
 
-function __insert_ANY2UN(source_node)
+function __insert_ANY2UN(source_node, target_node)
 {
   var parent_node = source_node.parent_node;
 
@@ -147,7 +145,7 @@ function __insert_ANY2UN(source_node)
       target_node.parent_node = parent_node;
       source_node.parent_node = target_node;
       push_to_nodelist(target_node, source_node);
-      push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "Drag Here!", target_node));
+      push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "X", target_node));
 
       break;
     }
