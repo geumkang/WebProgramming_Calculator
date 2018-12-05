@@ -133,6 +133,8 @@ function __insert_ND2NA(source_node, target_node)
   source_node.type = NONARITHMETIC;
   source_node.value = target_node.value;
   source_node.nodelist = target_node.nodelist;
+  target_node.parent_node = source_node;
+
 }
 
 function __insert_ANY2UN(source_node, target_node)
