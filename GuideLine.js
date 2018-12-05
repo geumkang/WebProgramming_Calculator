@@ -1,7 +1,9 @@
 var SectionList = new Array();
 var mouseSection = -1;
+// true = always, false = optional
 var GuideLineMode = true;
 var DashColor = "rgb(255,0,0)"
+var DragStartNode;
 //////////////////////////////////////////////////
 //
 // Section Related Function, Class
@@ -62,7 +64,7 @@ function traverse(node, section){
 		// console.log("SectionY : " + section.Y);
 		// console.log("SectionW : " + section.W);
 		// console.log("SectionH : " + section.H);
-
+		console.log(node.type);
 		if(node.value == "sigma"){
 			var max = 0;
 			var temp, temp2;
@@ -90,9 +92,11 @@ function traverse(node, section){
 				max = size - temp2.W;
 			section = traverse(node.nodelist[2], new Section(section.X+max, section.Y, section.W-max, section.H));
 		}
-		else if(node.type == ONLYDRAWABLE){
-			
-			/* 루트 */
+		else if(node.type == UPPERNODE){
+			section = drawGuideLine(section.X, section.Y, section.W, section.H, "(");
+			section = traverse(node.nodelist[0], new Section(section.X, section.Y, section.W, section.H));
+			section = drawGuideLine(section.X, section.Y, section.W, section.H, ")");
+			section = drawGuideLine(section.X, section.Y, section.W, section.H/2, node.nodelist[1]);
 		}
 
 		else{
@@ -115,7 +119,10 @@ function drawGuideLine(X, Y, W, H, node){
 	if(GuideLineMode) contextDash.strokeRect(X,Y,size,H);
 	SectionList.push(new Section(X,Y,size,H, true, node));
 
-	if(value == "sigma"){
+	if(node == "(" || node == ")"){
+		context.fillText(node, X, Y + H/2, size, H);
+	}
+	else if(value == "sigma"){
 		var img = new Image();
 		img.src = document.getElementById("sigma").src;
 		context.drawImage(img, 0, 0, img.width, img.height, X, Y, W, H);
@@ -125,7 +132,7 @@ function drawGuideLine(X, Y, W, H, node){
 		img.src = document.getElementById("integral").src;
 		context.drawImage(img, 0, 0, img.width, img.height, X, Y+10, size, H-20);
 	}
-	else if(type == ONLYDRAWABLE){
+	else if(type == UPPERNODE){
 		//context.fillText(node.value, X, Y + H/2, size, H);
 	}
 	else{
@@ -142,7 +149,10 @@ function getSize(node){
 		var value = node.value;
 		var unit = 50;
 
-		if(type == NOTDEFINED){
+		if(node == "(" || node == ")"){
+			return unit.length / 5 * unit;
+		}
+		else if(type == NOTDEFINED){
 			return unit*2;
 		}
 		else if(type == ARITHMETIC){	// + - * /
@@ -211,25 +221,27 @@ function dropEnd(ev)
 	}
 }
 
+// 이동하면서 지나는 구역들에 가이드라인을 그려줌
 function mouseMove(ev){
-	if(!GuideLineMode){
-		current = findSection(event.offsetX, event.offsetY);
-		
-		if(mouseSection == -1){
+	current = findSection(event.offsetX, event.offsetY);
+	
+	if(mouseSection == -1){
+		if(!GuideLineMode)
 			contextDash.clearRect(0, 0, canvas.width, canvas.height);
+		contextDash.strokeStyle = DashColor;
+		contextDash.strokeRect(current.X,current.Y,current.W,current.H);
+		mouseSection = current;
+	}
+	else{
+		if(mouseSection != current){
+			if(!GuideLineMode)
+				contextDash.clearRect(0, 0, canvas.width, canvas.height);
 			contextDash.strokeStyle = DashColor;
 			contextDash.strokeRect(current.X,current.Y,current.W,current.H);
 			mouseSection = current;
 		}
-		else{
-			if(mouseSection != current){
-				contextDash.clearRect(0, 0, canvas.width, canvas.height);
-				contextDash.strokeStyle = DashColor;
-				contextDash.strokeRect(current.X,current.Y,current.W,current.H);
-				mouseSection = current;
-			}
-		}
 	}
+	
 }
 
 function drawStart(ev){
@@ -237,6 +249,7 @@ function drawStart(ev){
 	contextDash.strokeStyle = DashColor;
 	var node = findSectionNode(event.offsetX, event.offsetY);
 	var section = findSection(event.offsetX, event.offsetY);
+	DragStartNode = node;
 	console.log(node.parent_node);
 	for(var i = SectionList.length - 1; i > -1; i--){
 		if(search_common_parent(node,SectionList[i].node) == node){
@@ -247,6 +260,21 @@ function drawStart(ev){
 
 function drawEnd(ev){
 	DashColor = "rgb(255,0,0)";
+	contextDash.strokeStyle = DashColor;
+	if(GuideLineMode){
+		contextDash.clearRect(0, 0, canvas.width, canvas.height);
+		for(var i = SectionList.length - 1; i > -1; i--){
+			contextDash.strokeRect(SectionList[i].X,SectionList[i].Y,SectionList[i].W,SectionList[i].H);	
+		}		
+	}
+
+	var Endnode = findSectionNode(event.offsetX, event.offsetY);
+	var CommonParentNode = search_common_parent(DragStartNode, Endnode);
+	insert(CommonParentNode, UPPERNODE, "pow");
+	
+	SectionList = new Array();
+	traverse(root_node.nodelist[0], new Section(0,0,canvas.width,canvas.height));
+	
 }
 //////////////////////////////////////////////////
 //
