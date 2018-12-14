@@ -93,11 +93,11 @@ function traverse(node, section){
 			section = traverse(node.nodelist[2], new Section(section.X+max, section.Y, section.W-max, section.H));
 		}
 		else if(node.type == UPPERNODE){
-			console.log("aasd");
 			section = drawGuideLine(section.X, section.Y, section.W, section.H, "(");
 			section = traverse(node.nodelist[0], new Section(section.X, section.Y, section.W, section.H));
 			section = drawGuideLine(section.X, section.Y, section.W, section.H, ")");
-			section = traverse(node.nodelist[1], new Section(section.X, section.Y, section.W, section.H));
+			section = traverse(node.nodelist[1], new Section(section.X, section.Y, section.W, section.H/2));
+			section = new Section(section.X, section.Y, section.W, section.H * 2);
 		}
 
 		else{
@@ -136,6 +136,18 @@ function drawGuideLine(X, Y, W, H, node){
 	}
 	else if(type == UPPERNODE){
 		//context.fillText(node.value, X, Y + H/2, size, H);
+	}
+	else if(value == "plus"){
+		context.fillText("+", X, Y + H/2, size, H);
+	}
+	else if(value == "minus"){
+		context.fillText("-", X, Y + H/2, size, H);
+	}
+	else if(value == "multiply"){
+		context.fillText("*", X, Y + H/2, size, H);
+	}
+	else if(value == "divide"){
+		context.fillText("/", X, Y + H/2, size, H);
 	}
 	else{
 		context.fillText(node.value, X, Y + H/2, size, H);
@@ -272,6 +284,8 @@ function drawEnd(ev){
 
 	var Endnode = findSectionNode(event.offsetX, event.offsetY);
 	var CommonParentNode = search_common_parent(DragStartNode, Endnode);
+	console.log("StartParent + ", DragStartNode.parent_node);
+	//console.log("End + ", Endnode);
 	insert(CommonParentNode, UPPERNODE, "pow");
 	
 	context.clearRect(0, 0, canvas.width, canvas.height);
