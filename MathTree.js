@@ -262,7 +262,7 @@ function insert_operation(type, target_node, index)
   var parent_node = current_node.parent_node;
   var insert_node = new calculate_tree(index, type, parent_node);
   push_to_nodelist(insert_node, current_node);
-  push_to_nodelist(target_node, new calculate_tree(NOTDEFINED, "Drag Here!", target_node));
+  push_to_nodelist(insert_node, new calculate_tree(index+1, "ND", insert_node));
   current_node.parent_node = insert_node;
 
   for(var i = 0; i < parent_node.nodelist.length; i++)
