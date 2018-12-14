@@ -37,10 +37,12 @@
 
 		<div class="canvas1">
 			<canvas id="chart0" height="500" width="1000" style='border:1px solid'
-        		></canvas>
+			ondrop="drop(event)" ondragover="allowDrop(event)"
+></canvas>
 		</div>
 		<div class="canvas2">
 			<canvas id="chart1" height="500" width="1000" style='border:1px solid'
+
         ></canvas>
 		</div>
 		<!--div>
@@ -76,17 +78,18 @@
 	</br></br>
 
 		<textarea id = "plain_text" name = "plain_text" autofocus required wrap = "hard"
-	   width = "500" draggable="true"  placeholder="행렬을 입력하세요"
+	   width = "500" draggable="true" ondragstart="dragStart(event)" placeholder="행렬을 입력하세요"
 	  ></textarea>
 
-						<div class = "radio_button">
-              <input type = "radio" id = "det" name = "radio_B" class = "radio_b" />Det </br>
-              <input type = "radio" id = "inverse" name = "radio_B" class = "radio_b" />Inverse</br>
-              <input type = "radio" id = "transpose" name = "radio_B" class = "radio_b" />Transpose</br>
-              <input type = "radio" id = "row_reduce" name = "radio_B" class = "radio_b" />Row Recude</br>
-              <input type = "radio" id = "eigenvalues" name = "radio_B" class = "radio_b" />Eigenvalues</br>
-              <input type = "radio" id = "rank" name = "radio_B" class = "radio_b" />Rank
-           </div>
+		<div class = "radio_button">
+					<input type = "radio" id = "det" name = "radio_B" checked = "checked" />Det </br>
+					<input type = "radio" id = "inverse" name = "radio_B" checked = "checked" />Inverse</br>
+					<input type = "radio" id = "transpose" name = "radio_B" checked = "checked" />Transpose</br>
+					<input type = "radio" id = "row_reduce" name = "radio_B" checked = "checked" />Row Reduce</br>
+					<input type = "radio" id = "eigenvalues" name = "radio_B" checked = "checked" />Eigenvalues</br>
+					<input type = "radio" id = "rank" name = "radio_B" checked = "checked" />Rank
+		</div>
+
 
 					 <!-- 결과 view -->
 <div id = "result" class = "result">

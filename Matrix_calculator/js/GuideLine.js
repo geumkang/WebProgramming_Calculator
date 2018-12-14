@@ -4,7 +4,7 @@ var whichButton = 0;  // 0 - left / 1 - right
 var oldX = 0;
 var oldY = 0;
 var SectionList = new Array();
-
+var mouseSection = -1;
 var isDrawing = false;
 var idx = 0;
 var currentSectionIdx = 0;
@@ -12,6 +12,13 @@ var myTimer;
 var TimerOn = false;	// 타이머 작동 여부 체크 변수
 var selectSection = false;	// 정해진 섹터 안에서만 그리기 변수
 var GuideLineMode;
+
+var RowCount = 0;
+var ColCount = 0;
+var numSpace = 0;
+var numEnter = 1;
+//var Matrix = new Array();
+var inputValue = null;
 
 function Section(idx, X, Y, W, H, isEditable){
 	this.idx = idx;
@@ -44,9 +51,9 @@ function GuideLineModeChanged(){
 
 function DrawGuideLineMatrix(){
 	var target = document.getElementById("MatrixRowSelectBox");
-	var RowCount = target.options[target.selectedIndex].value;
+	RowCount = target.options[target.selectedIndex].value;
 	target = document.getElementById("MatrixColSelectBox");
-	var ColCount = target.options[target.selectedIndex].value;
+	ColCount = target.options[target.selectedIndex].value;
 
 	console.log(RowCount + " " + ColCount);
 
@@ -128,17 +135,36 @@ function Init(){
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// 위에서 그린 가이드라인 안에다가 입력받은 글자 넣기
-// void drawMatrixValue(var inputValue){
-// 	// 1. 입력받은 식이 선택한 행과 열과 맞는가 검사
-// 	//
-//
-// 	// 2. 맞다면 숫자를 그린다
-// 	// for(var row = 0 ~ size)
-// 	// 	for(var col = 0 ~ size)
-// 	// 		calculatePosAndDraw(row, col, value[row*col])
-// }
-//
+
+function drawMatrixValue() {
+
+
+ var txtBox = document.getElementById("plain_text");
+ var Row = txtBox.value.split("\n");
+
+       for (var i = 0; i < Row.length; i++)
+       {
+         var A = Row[i].split(" ");
+
+         for (var j = 0; j < A.length; j++)
+         {
+            if(j==A.length-1){}
+            else  {numSpace +=1;}
+         }
+         if(i==Row.length-1){}
+         else{ numEnter +=1;}
+			 }
+
+			 	// 2. 맞다면 숫자를 그린다
+			 	if(RowCount == numEnter && ColCount == numSpace){
+			 		console.log(RowCount + "그릴수있어요~ " + ColCount);
+			 		//calculatePosAndDraw(row, col, value[row*col])
+			 	}
+
+
+}
+
+
 // void calculatePosAndDraw(var row, var col, var value){
 // 	// canvas 각 섹터 위치
 // 	/*
@@ -157,62 +183,72 @@ function Init(){
 //
 //
 ///////////////////////////////////////////////////////////////////////////////////////
-//이벤트 발생 함수
-// function drawMatrixValue(inputValue){
-// 	current = findSection(event.offsetX, event.offsetY);
-//
-// 	if(mouseSection == -1){
-// 		if(!GuideLineMode)
-// 			contextDash.clearRect(0, 0, canvas.width, canvas.height);
-// 		contextDash.strokeStyle = DashColor;
-// 		contextDash.strokeRect(current.X,current.Y,current.W,current.H);
-// 		mouseSection = current;
-// 	}
-// 	else{
-// 		if(mouseSection != current){
-// 			if(!GuideLineMode)
-// 				contextDash.clearRect(0, 0, canvas.width, canvas.height);
-// 			contextDash.strokeStyle = DashColor;
-// 			contextDash.strokeRect(current.X,current.Y,current.W,current.H);
-// 			mouseSection = current;
-// 		}
-// 	}
-//
-// }
-//
-// function dragStart(ev){
-// 	DashColor = "rgb(0,0,255)"
-// 	contextDash.strokeStyle = DashColor;
-// 	var node = findSectionNode(event.offsetX, event.offsetY);
-// 	var section = findSection(event.offsetX, event.offsetY);
-// 	DragStartNode = node;
-// 	console.log(node.parent_node);
-// 	for(var i = SectionList.length - 1; i > -1; i--){
-// 		if(search_common_parent(node,SectionList[i].node) == node){
-// 			contextDash.strokeRect(SectionList[i].X,SectionList[i].Y,SectionList[i].W,SectionList[i].H);
-// 		}
-// 	}
-// }
-//
-// function dragEnd(ev){
-// 	DashColor = "rgb(255,0,0)";
-// 	contextDash.strokeStyle = DashColor;
-// 	if(GuideLineMode){
-// 		contextDash.clearRect(0, 0, canvas.width, canvas.height);
-// 		for(var i = SectionList.length - 1; i > -1; i--){
-// 			contextDash.strokeRect(SectionList[i].X,SectionList[i].Y,SectionList[i].W,SectionList[i].H);
-// 		}
-// 	}
-//
-// 	var Endnode = findSectionNode(event.offsetX, event.offsetY);
-// 	var CommonParentNode = search_common_parent(DragStartNode, Endnode);
-// 	console.log("StartParent + ", DragStartNode.parent_node);
-// 	//console.log("End + ", Endnode);
-// 	insert(CommonParentNode, UPPERNODE, "pow");
-//
-// 	context.clearRect(0, 0, canvas.width, canvas.height);
-// 	contextDash.clearRect(0, 0, canvas.width, canvas.height);
-// 	SectionList = new Array();
-// 	traverse(root_node.nodelist[0], new Section(0,0,canvas.width,canvas.height));
-//
-// }
+
+
+function allowDrop(ev){
+	ev.preventDefault();
+console.log("canvas이동!");}
+function dragStart(ev){
+	ev.dataTransfer.setData("text", ev.target.id);
+	console.log("드래그 시작" + ev.target.id);
+}
+
+function drop(ev) {
+	 ev.preventDefault();
+	 //var c = ev.dataTransfer.getData("text");
+	 drawMatrixValue();
+ 	console.log("확인?");
+	 //ev.target.appendChild(document.getElementById(c));
+ }
+
+
+
+///////////////////////////////////////////////////////////////////////////////////
+
+//울프람알파로 보낼때 호출하기
+function StoreMatrix() {
+   var txtBox = document.getElementById("plain_text");
+   var Row = txtBox.value.split("\n");
+
+    // 행렬 입력
+    var matrix_string = matrix_string + "{";
+    for (var i = 0; i < Row.length; i++)
+      {
+        var A = Row[i].split(" ");
+        matrix_string = matrix_string + "(";
+        for (var j = 0; j < A.length; j++)
+        {
+            if(j==A.length-1)
+               matrix_string = matrix_string + A[j] + ")";
+            else
+            matrix_string = matrix_string + A[j] + ",";
+        }
+        if(i==Row.length-1)
+            matrix_string = matrix_string + "}";
+        else
+            matrix_string = matrix_string + ",";
+    }
+    console.log(matrix_string);
+
+    // radio button 결합
+    var output_string;
+    if(document.getElementById("det").checked)
+       output_string = "det " + matrix_string;
+
+   if(document.getElementById("inverse").checked)
+      output_string = "inverse " + matrix_string;
+
+   if(document.getElementById("transpose").checked)
+      output_string = "transpose " + matrix_string;
+
+   if(document.getElementById("row_reduce").checked)
+      output_string = "row reduce " + matrix_string;
+
+   if(document.getElementById("eigenvalues").checked)
+      output_string = "eigenvalues " + matrix_string;
+
+   if(document.getElementById("rank").checked)
+      output_string = "rank " + matrix_string;
+
+   console.log(output_string);
+}
