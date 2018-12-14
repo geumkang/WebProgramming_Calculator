@@ -20,6 +20,15 @@ var numEnter = 1;
 //var Matrix = new Array();
 var inputValue = null;
 
+var matrix = new Array();
+
+// formula string
+var matrix_string = "";
+var output_string ="";
+
+
+
+
 function Section(idx, X, Y, W, H, isEditable){
 	this.idx = idx;
 	this.X = X;
@@ -158,38 +167,62 @@ function drawMatrixValue() {
 			 	// 2. 맞다면 숫자를 그린다
 			 	if(RowCount == numEnter && ColCount == numSpace){
 			 		console.log(RowCount + "그릴수있어요~ " + ColCount);
-			 		//calculatePosAndDraw(row, col, value[row*col])
+			 		calculatePosAndDraw();
 			 	}
 
 
 }
 
 
-// void calculatePosAndDraw(var row, var col, var value){
-// 	// canvas 각 섹터 위치
-// 	/*
-// 	1. 구역 위치 계산
-// 	X = 캔버스 높이 / row
-// 	Y = 캔버스 너비 / col
-// 	---> 해당 섹터 위치 => startX = row * X, startY = col * Y
-//
-// 	2. 글자 위치 계산
-// 	글자 시작 위치 = X + row/2, Y + col/2 - (글자 길이 / 2)
-//
-// 	3. 글자 그리기
-// 	fillText 함수
-// 	*/
-// }
-//
-//
+function calculatePosAndDraw(){
+
+	console.log("canvas 그리기");
+			var X = 1000;
+			var Y = 500;
+			var x = X / RowCount;
+			var y = Y / ColCount;
+
+			var startX = 0;
+			var startY = 0;
+			var charX = 0;
+			var charY = 0;
+
+			for (var i = 0; i < RowCount; i++)
+			{
+				for (var j = 0; j < ColCount; j++)
+				{
+
+					var value = matrix[i][j];
+					var valueLength = value.toString().length;
+
+					console.log(value);
+					console.log(valueLength);
+
+					startX = j * x;
+					startY = i * y;
+
+					charX = startX + x/2;
+					charY = startY + y/2 - (valueLength)/2;
+
+					context.fillText(value, charX, charY);
+					console.log("숫자 그림");
+
+				}
+			}
+
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////////////
 
 
 function allowDrop(ev){
 	ev.preventDefault();
 console.log("canvas이동!");}
+
 function dragStart(ev){
 	ev.dataTransfer.setData("text", ev.target.id);
+	StoreMatrix();
 	console.log("드래그 시작" + ev.target.id);
 }
 
@@ -208,20 +241,28 @@ function drop(ev) {
 //울프람알파로 보낼때 호출하기
 function StoreMatrix() {
    var txtBox = document.getElementById("plain_text");
-   var Row = txtBox.value.split("\n");
+
+    var Row = txtBox.value.split("\n");
 
     // 행렬 입력
-    var matrix_string = matrix_string + "{";
+    matrix_string = matrix_string + "{";
     for (var i = 0; i < Row.length; i++)
-      {
+     {
+        matrix[i] = new Array();
         var A = Row[i].split(" ");
+
         matrix_string = matrix_string + "(";
         for (var j = 0; j < A.length; j++)
         {
+           matrix[i][j] = new Array();
+           console.log(A[j]);
+            matrix[i][j] = A[j];
             if(j==A.length-1)
                matrix_string = matrix_string + A[j] + ")";
             else
             matrix_string = matrix_string + A[j] + ",";
+
+         //console.log(
         }
         if(i==Row.length-1)
             matrix_string = matrix_string + "}";
@@ -231,7 +272,7 @@ function StoreMatrix() {
     console.log(matrix_string);
 
     // radio button 결합
-    var output_string;
+
     if(document.getElementById("det").checked)
        output_string = "det " + matrix_string;
 

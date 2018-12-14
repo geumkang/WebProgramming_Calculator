@@ -43,6 +43,7 @@ button:hover{
 	width: 1000px;
 	height: 500px;
 	border: 1px solid gray;
+  font-size: 50px;
 }
 
 .canvas2{
