@@ -137,6 +137,18 @@ function drawGuideLine(X, Y, W, H, node){
 	else if(type == UPPERNODE){
 		//context.fillText(node.value, X, Y + H/2, size, H);
 	}
+	else if(value == "plus"){
+		context.fillText("+", X, Y + H/2, size, H);
+	}
+	else if(value == "minus"){
+		context.fillText("-", X, Y + H/2, size, H);
+	}
+	else if(value == "multiply"){
+		context.fillText("*", X, Y + H/2, size, H);
+	}
+	else if(value == "divide"){
+		context.fillText("/", X, Y + H/2, size, H);
+	}
 	else{
 		context.fillText(node.value, X, Y + H/2, size, H);
 	}
