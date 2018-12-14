@@ -62,7 +62,15 @@ function insert(current_node, type, value)
   else if(type == NONARITHMETIC){
     for(var i = 0; i < _value.length; i++){
       if(_value[i] == "+" || _value[i] == "-" || _value[i] == "*" || _value[i] == "/"){
-        var res = insert_node(nodeptr, new calculate_tree(ARITHMETIC, _value[i], null));
+        if(_value[i] == "+")
+          var typevalue = "plus";
+        else if(_value[i] == "-")
+          var typevalue = "minus";
+        else if(_value[i] == "*")
+          var typevalue = "multiply";
+        else if(_value[i] == "/")
+          var typevalue = "divide";
+        var res = insert_node(nodeptr, new calculate_tree(ARITHMETIC, typevalue, null));
         if(res == 0) return;
         nodeptr = nodeptr.parent_node.nodelist[1];
       }
@@ -134,7 +142,6 @@ function __insert_ND2NA(source_node, target_node)
   source_node.value = target_node.value;
   source_node.nodelist = target_node.nodelist;
   target_node.parent_node = source_node;
-
 }
 
 function __insert_ANY2UN(source_node, target_node)
@@ -158,13 +165,18 @@ function search_common_parent(start_node, end_node)
 {
   var start_parent_array = new Array();
 
-  for(var elem = start_node; elem.parent_node != null; elem = elem.parent_node)
+  for(var elem = start_node; elem.id != 0; elem = elem.parent_node)
   {
     start_parent_array.push(elem.id);
   }
 
-  for(var elem = end_node; elem.parent_node != null; elem = elem.parent_node)
+  console.log("STARTNODE: ", start_node);
+  console.log("SPA: ", start_parent_array);
+  console.log("END: ", end_node);
+
+  for(var elem = end_node; elem.id != 0; elem = elem.parent_node)
   {
+    console.log("TAR: ", elem.id);
     if(start_parent_array.includes(elem.id))
       return elem;
   }
@@ -184,8 +196,14 @@ function get_root_node()
 
 function get_total_expr()
 {
+  console.log(calculate_tree_toString(root_node));
+
+  Req_send(calculate_tree_toString(root_node));
+
   return calculate_tree_toString(root_node);
 }
+
+
 
 function calculate_tree_toString(node)
 {
@@ -198,18 +216,26 @@ function calculate_tree_toString(node)
 
       case ARITHMETIC:
         math_expr =
-        calculate_tree_toString(node.nodelist[0]) + " " +
-        node.value + " " +
-        calculate_tree_toString(node.nodelist[1]);
+        "(" +
+        calculate_tree_toString(node.nodelist[0]) +
+        " " + node.value + " " +
+        calculate_tree_toString(node.nodelist[1]) + ")";
         break;
 
       case NONARITHMETIC:
-        if(node.value == "sigma" || node.value == "integral"){
+        if(node.value == "sigma"){ //(sum_(x=1)^10 x)
           math_expr =
-          node.value + " " +
-          calculate_tree_toString(node.nodelist[2]) + " " +
-          "from " + calculate_tree_toString(node.nodelist[0]) + " " +
-          "to " + calculate_tree_toString(node.nodelist[1]);
+          "(" +
+          "sum_(" + calculate_tree_toString(node.nodelist[0]) + ")^" +
+          calculate_tree_toString(node.nodelist[1]) + " " + 
+          calculate_tree_toString(node.nodelist[2]) + ")";
+        }
+        else if(node.value == "integral"){
+         math_expr =
+          "(" +
+          "integral_(" + calculate_tree_toString(node.nodelist[0]) + ")^" +
+          calculate_tree_toString(node.nodelist[1]) + " " + 
+          calculate_tree_toString(node.nodelist[2]) + ")";
         }
         else{
           math_expr = node.value;
@@ -217,8 +243,8 @@ function calculate_tree_toString(node)
 
         break;
 
-      case ONLYDRAWABLE:
-        math_expr = node.value + "("+ calculate_tree_toString(node.nodelist[0]) +")";
+      case UPPERNODE:
+        math_expr = node.value + "("+ calculate_tree_toString(node.nodelist[0])+ "," +calculate_tree_toString(node.nodelist[1]) + ")";
         break;
 
       case NOTDEFINED:
@@ -230,7 +256,7 @@ function calculate_tree_toString(node)
           break;
   }
 
-  return "(" + math_expr + ")";
+  return math_expr;
 }
 
 
