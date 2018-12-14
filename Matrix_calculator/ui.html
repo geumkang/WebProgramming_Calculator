@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+		<meta charset="utf-8">
+		<title>Calculator</title>
+		<link rel="stylesheet" type="text/css" href="./css/style.css" >
+
+</head>
+
+
+
+<body>
+
+	<!-- 제목 -->
+	  <div id = "title" class="title">
+	    <div>
+	      <h1><strong>Calculator</strong></h1>
+	    </div>
+	  </div>
+
+	  <!-- general / array formula -->
+	  <div id = "box" class = "box">
+	    <!-- swich_case 버튼 -->
+	    <div class = "switch_case">
+	      <button type = "button"> General Formula </button>
+	      <button type = "button"> Array Formula </button>
+	      <span style="position: relative; left: 700px">
+	          <label>Guide Line Mode</label>
+	          <select id="GuideLineModeSelectBox" onchange="GuideLineModeChanged()">
+	            <option value="1" selected="selected">Always</option>
+	            <option value="0">Optional</option>
+	          </select>
+	      </span>
+	    </div>
+
+
+
+		<div class="canvas1">
+			<canvas id="chart0" height="500" width="1000" style='border:1px solid'
+        		></canvas>
+		</div>
+		<div class="canvas2">
+			<canvas id="chart1" height="500" width="1000" style='border:1px solid'
+        ></canvas>
+		</div>
+		<!--div>
+			<select name="FormulaType" id="FormulaSelectBox" onChange="GuideLineTypeChanged()">
+			    <option value="0" selected="selected">일반 수식</option>
+			    <option value="1">행렬 수식</option>
+			</select>
+		</div-->
+		<div>
+			<select name="MatrixRow" id="MatrixRowSelectBox" onChange="GuideLineModeChanged()">
+			    <option value="1" selected="selected">1</option>
+			    <option value="2">2</option>
+			    <option value="3">3</option>
+			    <option value="4">4</option>
+			    <option value="5">5</option>
+			    <option value="6">6</option>
+			    <option value="7">7</option>
+			    <option value="8">8</option>
+			    <option value="9">9</option>
+			</select>
+			<select name="MatrixCol" id="MatrixColSelectBox" onChange="GuideLineModeChanged()">
+			    <option value="1" selected="selected">1</option>
+			    <option value="2">2</option>
+			    <option value="3">3</option>
+			    <option value="4">4</option>
+			    <option value="5">5</option>
+			    <option value="6">6</option>
+			    <option value="7">7</option>
+			    <option value="8">8</option>
+			    <option value="9">9</option>
+			</select>
+		</div>
+	</br></br>
+
+		<textarea id = "plain_text" name = "plain_text" autofocus required wrap = "hard"
+	   width = "500" draggable="true"  placeholder="행렬을 입력하세요"
+	  ></textarea>
+
+						<div class = "radio_button">
+              <input type = "radio" id = "det" name = "radio_B" class = "radio_b" />Det </br>
+              <input type = "radio" id = "inverse" name = "radio_B" class = "radio_b" />Inverse</br>
+              <input type = "radio" id = "transpose" name = "radio_B" class = "radio_b" />Transpose</br>
+              <input type = "radio" id = "row_reduce" name = "radio_B" class = "radio_b" />Row Recude</br>
+              <input type = "radio" id = "eigenvalues" name = "radio_B" class = "radio_b" />Eigenvalues</br>
+              <input type = "radio" id = "rank" name = "radio_B" class = "radio_b" />Rank
+           </div>
+
+					 <!-- 결과 view -->
+<div id = "result" class = "result">
+ <div id = "result_value_box">
+	 <span> result value </span>
+ </div>
+
+</div>
+
+		<!--
+		<div class="box">
+            <h1>content</h1>
+        </div>
+
+        <div class="box">
+            <h1>sidebar</h1>
+        </div>
+    	-->
+			<script src="./js/GuideLine.js"></script>
+			<!--script src="./js/Rbutton_check.js"></script>
+			<script src="./js/MathTree.js"></script>
+			<script src="./js/global_button_status.js"></script>
+			<script src="./js/StringTokenizer.js"></script-->
+
+			  </body>
+			</html>
