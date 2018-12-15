@@ -4,16 +4,17 @@
 		<meta charset="utf-8">
 		<title>Calculator</title>
 		<link rel="stylesheet" type="text/css" href="./main.css" >
+		<link rel="stylesheet" type="text/css" href="./matrix.css" >
 	</head>
 	<body>
 		<div id="title" class="title">
 			<h1><strong>Calculator</strong></h1>
 		</div>
-			
+
 		<div id="box" class="box" style="width: 100%; margin-left: 10%; margin-right: 10%">
 			<div>
-				<button type="button"> General Formula </button>
-				<button type="button"> Array Formula </button>
+				<button id = "general" type="button" onclick="menu_select(this.id)"> General Formula </button>
+				<button id = "array" type="button"  onclick="menu_select(this.id)"> Array Formula </button>
 				<span style="position: relative; left: 768px">
 					<label>Guide Line Mode</label>
 					<select id="GuidLineModeSelectBox" onchange="GuideLineModeChanged()">
@@ -22,20 +23,24 @@
 					</select>
 				</span>
 			</div>
-			
+
 			<div>
 				<canvas id="chart" class="canvas" width="1200px" height="500px"
 		        	onmousedown="drawStart(event)"
-		        	onmouseup="drawEnd(event)" 
-		        	ondragover="allowDrop(event)" 
-		        	onmousemove="mouseMove(event)" 
+		        	onmouseup="drawEnd(event)"
+		        	ondragover="allowDrop(event)"
+		        	onmousemove="mouseMove(event)"
 		        	ondrop="dropEnd(event)"
 				></canvas>
 				<canvas id="chart2" class="canvas2" width="1200px" height="500px"></canvas>
+				<canvas id="chart3" class="canvas3" width="1200px" height="500px"
+							ondragover="allowDrop_Matrix(event)"
+							ondrop="drop_Matrix(event)"
+				></canvas>
 			</div>
-		</div>	
+		</div>
 
-		<div style="width: 100%; margin-left: 20%;">
+		<div id = "general_input_button" style="width: 100%; margin-left: 20%;">
 			<div style="width: 60%">
 			<p class="formula">
 				<img src="./image/Formula_Sigma.png" id="sigma" width="70" height="70" draggable="true" ondragstart="dragStart(event)">
@@ -62,10 +67,61 @@
 			</div>
 		</div>
 
+
+		<div id="matrix_input_button">
+		    <div id = "input">
+		      <select name="MatrixRow" id="MatrixRowSelectBox" onChange="MatrixSizeChanged()">
+		      style = "margin-left: 100px; margin-top: 20px;">
+		          <option value="1" selected="selected">1</option>
+		          <option value="2">2</option>
+		          <option value="3">3</option>
+		          <option value="4">4</option>
+		          <option value="5">5</option>
+		          <option value="6">6</option>
+		          <option value="7">7</option>
+		          <option value="8">8</option>
+		          <option value="9">9</option>
+		      </select>
+		      <select name="MatrixCol" id="MatrixColSelectBox" onChange="MatrixSizeChanged()">
+		          <option value="1" selected="selected">1</option>
+		          <option value="2">2</option>
+		          <option value="3">3</option>
+		          <option value="4">4</option>
+		          <option value="5">5</option>
+		          <option value="6">6</option>
+		          <option value="7">7</option>
+		          <option value="8">8</option>
+		          <option value="9">9</option>
+		      </select>
+		</div>
+
+		    <div class = "user_input" style = "margin-left: 100px">
+			      <textarea id = "plain_text2" name = "plain_text" autofocus required wrap = "hard"
+			        draggable="true" ondragstart="dragStart_Matrix(event)" placeholder="행렬을 입력하세요"
+			      > </textarea>
+			    </div>
+
+				<div id = "button">
+				    <div class = "radio_button" style = "margin-left: 100px">
+				          <input type = "radio" id = "det" name = "radio_B" checked = "checked" />Det</br>
+				          <input type = "radio" id = "inverse" name = "radio_B"/>Inverse</br>
+				          <input type = "radio" id = "transpose" name = "radio_B"/>Transpose</br>
+				          <input type = "radio" id = "row_reduce" name = "radio_B"/>Row Reduce</br>
+				          <input type = "radio" id = "eigenvalues" name = "radio_B"/>Eigenvalues</br>
+				          <input type = "radio" id = "rank" name = "radio_B"/>Rank</br>
+				    </div>
+				</div>
+		</div></br></br></br></br></br>
+
+
+		  </br>
+
+
 		<script src="./js/GuideLine.js"></script>
 		<script src="./js/MathTree.js"></script>
 		<script src="./js/global_button_status.js"></script>
 		<script src="./js/StringTokenizer.js"></script>
 		<script src="./js/WolframRequest.js"></script>
+			<script src="./js/Matrix.js"></script>
 	</body>
 </html>
