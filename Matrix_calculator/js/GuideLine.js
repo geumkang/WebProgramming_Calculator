@@ -14,15 +14,10 @@ var selectSection = false;	// 정해진 섹터 안에서만 그리기 변수
 var GuideLineMode;
 
 
-
 var FormulaMode = 1;
-var RowCount = 0;
-var ColCount = 0;
 var matrix = new Array();
-
-
-
-
+var RowCount = 1;
+var ColCount = 1;
 
 
 function Section(idx, X, Y, W, H, isEditable){
@@ -142,7 +137,9 @@ function Init(){
 
 
 function drawMatrixValue() {
- 	if(RowCount == Row.length && ColCount == A.length){
+	console.log(RowCount + " " + ColCount + " " + matrix.length + " " + matrix[0].length);
+
+ 	if(RowCount == matrix.length && ColCount == matrix[0].length){
  		console.log(RowCount + "그릴수있어요~ " + ColCount);
  		calculatePosAndDraw();
  	}
@@ -152,46 +149,41 @@ function drawMatrixValue() {
 function calculatePosAndDraw(){
 
 	console.log("canvas 그리기");
+	var X = 1000;
+	var Y = 500;
+	var x = X / ColCount;
+	var y = Y / RowCount;
 
-			console.log(RowCount);
-			console.log(ColCount);
-			var X = 1000;
-			var Y = 500;
-			var x = X / ColCount;
-			var y = Y / RowCount;
+	var startX = 0;
+	var startY = 0;
+	var charX = 0;
+	var charY = 0;
 
-			var startX = 0;
-			var startY = 0;
-			var charX = 0;
-			var charY = 0;
+	var _x = 0;
+	var _y = 0;
 
-			var _x = 0;
-			var _y = 0;
+	for (var i = 0; i < RowCount; i++)
+	{
+		for (var j = 0; j < ColCount; j++)
+		{
+			var value = matrix[i][j];
+			var valueLength = value.toString().length;
 
-			for (var i = 0; i < RowCount; i++)
-			{
-				for (var j = 0; j < ColCount; j++)
-				{
+			console.log(value);
+			console.log(valueLength);
 
-					var value = matrix[i][j];
-					var valueLength = value.toString().length;
+			startX = j * x;
+			startY = i * y;
 
-					console.log(value);
-					console.log(valueLength);
+			charX = startX + x/2 - valueLength*10/2;
+			charY = startY + y/2; // - (valueLength)/2;
 
-					startX = j * x;
-					startY = i * y;
-
-					charX = startX + x/2 - (valueLength)*4;
-					charY = startY + y/2; // - (valueLength)/2;
-
-					context.font = "20px Georgia";
-					context.fillText(value, charX, charY);
-					console.log("숫자 그림");
-					_x+=1;
-				}_y+=1;
-			}
-
+			context.font = "20px Georgia";
+			context.fillText(value, charX, charY);
+			console.log("숫자 그림");
+			_x+=1;
+		}_y+=1;
+	}
 }
 
 
