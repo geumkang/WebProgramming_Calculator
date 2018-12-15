@@ -214,7 +214,7 @@ function menu_select(click_id){
 		document.getElementById('chart2').style.display = "block";
 		document.getElementById('chart3').style.display = "none";
 
-	 Init_matrix();
+  	Init();
 		console.log(FormulaMode);
 	}
 	else{
