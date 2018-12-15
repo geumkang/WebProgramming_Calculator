@@ -385,6 +385,10 @@ function DrawNewGuideLineMatrix(){
 
 function calculateNewPosAndDraw(){
 
+	document.getElementById("MatrixRowSelectBox").value = 0;
+	document.getElementById("MatrixColSelectBox").value = 0;
+
+
 	console.log("결과 canvas 그리기");
 	var X = 1200;
 	var Y = 500;
