@@ -268,3 +268,8 @@ function StoreMatrix() {
 
    console.log(output_string);
 }
+// Reset button click
+function Reset_Click() {
+   matrix_string = "";
+   document.getElementById("plain_text").value = "";
+}
