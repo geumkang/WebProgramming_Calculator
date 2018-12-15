@@ -214,7 +214,7 @@ function menu_select(click_id){
 		document.getElementById('chart2').style.display = "block";
 		document.getElementById('chart3').style.display = "none";
 
-		Init();
+		request_string();
 		console.log(FormulaMode);
 	}
 	else{
@@ -225,8 +225,8 @@ function menu_select(click_id){
 		document.getElementById('chart2').style.display = "none";
 		document.getElementById('chart3').style.display = "block";
 
-		document.getElementById("MatrixRowSelectBox").value = 1;
-		document.getElementById("MatrixColSelectBox").value = 1;
+		document.getElementById("MatrixRowSelectBox").value = 0;
+		document.getElementById("MatrixColSelectBox").value = 0;
 
 		MatrixSizeChanged();
 		context_matrix.clearRect(0, 0, canvas.width, canvas.height);
@@ -265,7 +265,7 @@ function Req_send2(){
 
 	Request_matrix_cal(request_string);
 //		wait(3000);
-	setTimeout(function(){StringToMatrix();}, 5000);
+	setTimeout(function(){Init_matrix();StringToMatrix();}, 4000);
 
 }
 
