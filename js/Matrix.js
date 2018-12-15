@@ -1,7 +1,9 @@
-
-
+var matrix_string;
+var output_string;
+var request_string;
 var FormulaMode ;
 var matrix = new Array();
+var rMatrix = new Array();
 var RowCount = 1;
 var ColCount = 1;
 
@@ -220,6 +222,8 @@ function StoreMatrix() {
       output_string = "rank " + matrix_string;
 
    console.log(output_string);
+
+	 request_string = output_string;
 }
 
 function menu_select(click_id){
@@ -252,6 +256,167 @@ function menu_select(click_id){
 		context_matrix.clearRect(0, 0, canvas.width, canvas.height);
 		console.log(FormulaMode);
 	}
+}
 
 
+// Req_send();
+
+function Req_send2(){
+	Request_matrix_cal(request_string);
+//		wait(3000);
+	setTimeout(function(){StringToMatrix();}, 5000);
+
+}
+
+var AA;
+
+function Request_matrix_cal(request_string){
+	var requestURL = "http://api.wolframalpha.com/v2/query?input=" + request_string + "&appid=464R2R-2T6U338YAW&output=json";
+
+	console.log(request_string+ ", "+ requestURL);
+
+	var request = new XMLHttpRequest();
+	request.open('GET', requestURL, true);
+
+	//request.responseType = 'JSON';
+//	request.send();
+
+	var cal_matrix;
+
+	request.onload = function(){
+		console.log(request.responseText);
+
+		var matrix_response = JSON.parse(request.responseText);
+		cal_matrix = matrix_response.queryresult.pods[1].subpods[0].plaintext;
+		console.log(cal_matrix);
+		AA = cal_matrix;
+	}
+
+
+	request.send(null);
+
+
+
+}
+
+function StringToMatrix() {
+		//wait(3000);
+console.log("cal_matrix : " + AA);
+console.log("stt확인");
+    var rRow = null;
+	var rA = null;
+  AA=AA.replace("(", "");
+  AA=AA.replace(")", "");
+	console.log("cal_matrix_new : " + AA);
+    rRow = AA.split("\n");
+
+    // 행렬 입력
+
+    for (var i = 0; i < rRow.length; i++)
+    {
+				console.log(rRow[i]);
+        rMatrix[i] = new Array();
+        rA = rRow[i].split(" | ");
+
+
+        for (var j = 0; j < rA.length; j++)
+        {
+           	rMatrix[i][j] = new Array();
+           	console.log(rA[j]);
+            rMatrix[i][j] = rA[j];
+            console.log(rMatrix[i][j]);
+        }
+
+    }
+		Init_matrix();
+		DrawNewGuideLineMatrix();
+		calculateNewPosAndDraw();
+}
+
+
+function DrawNewGuideLineMatrix(){
+	//var target = document.getElementById("MatrixRowSelectBox");
+	//RowCount = target.options[target.selectedIndex].value;
+	//target = document.getElementById("MatrixColSelectBox");
+//	ColCount = target.options[target.selectedIndex].value;
+
+//	console.log(RowCount + " " + ColCount);
+
+	context_matrix.beginPath();
+	context_matrix.lineWidth = 1;
+	context_matrix.setLineDash([3,1]);
+	context_matrix.strokeStyle = "rgb(255,0,0)"
+
+	var canvasW = canvas.width;
+	var canvasH = canvas.height;
+
+	if(rMatrix.length == 1 && rMatrix[0].length == 1){
+		// var temp = new Section(idx, 0, 0, canvasW, canvasH, true);
+		// idx++;
+		// SectionList.push(temp);
+	}
+	else{
+		for(var j = 1; j <= rMatrix.length; j++){
+			for(var i = 1; i <= rMatrix[0].length; i++){
+				console.log(rMatrix.length + " " + rMatrix[0].length);
+				if(j == 1 && i < rMatrix[0].length){
+					context_matrix.moveTo(canvasW / rMatrix[0].length * i, 0);
+					context_matrix.lineTo(canvasW / rMatrix[0].length * i, canvasH);
+				}
+				if(i == 1 && j < rMatrix.length){
+					context_matrix.moveTo(0, canvasH / rMatrix.length * j);
+					context_matrix.lineTo(canvasW, canvasH / rMatrix.length * j);
+				}
+				// var temp = new Section(idx + 1, canvasW / ColCount * (i-1), canvasH / RowCount * (j-1), canvasW / ColCount, canvasH / RowCount, true);
+				// SectionList.push(temp);
+				// console.log(idx + " : " + SectionList[idx-1].X + " " + SectionList[idx-1].Y + " " + SectionList[idx-1].W + " " + SectionList[idx-1].H);
+				// idx++;
+
+			}
+		}
+	}
+//	console.log("SectionList 개수 : " + SectionList.length);
+	context_matrix.stroke();
+
+	context_matrix.setLineDash([0]);
+}
+
+
+function calculateNewPosAndDraw(){
+
+	console.log("결과 canvas 그리기");
+	var X = 1200;
+	var Y = 500;
+	var x = X / rMatrix[0].length;
+	var y = Y / rMatrix.length;
+
+	var startX = 0;
+	var startY = 0;
+	var charX = 0;
+	var charY = 0;
+
+	var _x = 0;
+	var _y = 0;
+
+	for (var i = 0; i < rMatrix.length; i++)
+	{
+		for (var j = 0; j < rMatrix[0].length; j++)
+		{
+			var value = rMatrix[i][j];
+			var valueLength = value.toString().length;
+
+			console.log(value);
+			console.log(valueLength);
+
+			startX = j * x;
+			startY = i * y;
+
+			charX = startX + x/2 - valueLength*10/2;
+			charY = startY + y/2; // - (valueLength)/2;
+
+			context_matrix.fillText(value, charX, charY);
+			console.log("숫자 그림");
+			_x+=1;
+		}_y+=1;
+	}
 }
