@@ -52,7 +52,7 @@
 			</select>
 		</div-->
 		<div>
-			<select name="MatrixRow" id="MatrixRowSelectBox" onChange="GuideLineModeChanged()">
+			<select name="MatrixRow" id="MatrixRowSelectBox" onChange="MatrixSizeChanged()">
 			    <option value="1" selected="selected">1</option>
 			    <option value="2">2</option>
 			    <option value="3">3</option>
@@ -63,7 +63,7 @@
 			    <option value="8">8</option>
 			    <option value="9">9</option>
 			</select>
-			<select name="MatrixCol" id="MatrixColSelectBox" onChange="GuideLineModeChanged()">
+			<select name="MatrixCol" id="MatrixColSelectBox" onChange="MatrixSizeChanged()">
 			    <option value="1" selected="selected">1</option>
 			    <option value="2">2</option>
 			    <option value="3">3</option>
@@ -82,12 +82,12 @@
 	  ></textarea>
 
 		<div class = "radio_button">
-					<input type = "radio" id = "det" name = "radio_B" checked = "checked" />Det </br>
-					<input type = "radio" id = "inverse" name = "radio_B" checked = "checked" />Inverse</br>
-					<input type = "radio" id = "transpose" name = "radio_B" checked = "checked" />Transpose</br>
-					<input type = "radio" id = "row_reduce" name = "radio_B" checked = "checked" />Row Reduce</br>
-					<input type = "radio" id = "eigenvalues" name = "radio_B" checked = "checked" />Eigenvalues</br>
-					<input type = "radio" id = "rank" name = "radio_B" checked = "checked" />Rank
+			<input type = "radio" id = "det" name = "radio_B" checked = "checked"/>Det</br>
+			<input type = "radio" id = "inverse" name = "radio_B"/>Inverse</br>
+			<input type = "radio" id = "transpose" name = "radio_B"/>Transpose</br>
+			<input type = "radio" id = "row_reduce" name = "radio_B"/>Row Reduce</br>
+			<input type = "radio" id = "eigenvalues" name = "radio_B"/>Eigenvalues</br>
+			<input type = "radio" id = "rank" name = "radio_B"/>Rank
 		</div>
 
 

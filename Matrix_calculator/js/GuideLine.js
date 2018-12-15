@@ -13,20 +13,14 @@ var TimerOn = false;	// 타이머 작동 여부 체크 변수
 var selectSection = false;	// 정해진 섹터 안에서만 그리기 변수
 var GuideLineMode;
 
+
+
+var FormulaMode = 1;
 var RowCount = 0;
 var ColCount = 0;
-var numSpace = 0;
-var numEnter = 1;
-//var Matrix = new Array();
-var inputValue = null;
-
 var matrix = new Array();
-var Row = null;
-var A = null;
 
-// formula string
-var matrix_string = "";
-var output_string ="";
+
 
 
 
@@ -49,12 +43,12 @@ var context;
 var context2;
 
 
-function GuideLineModeChanged(){
+function MatrixSizeChanged(){
 	context.clearRect(0, 0, canvas[0].width, canvas[0].height);
 	context2.clearRect(0, 0, canvas[0].width, canvas[0].height);
 	Init();
-	console.log("enter Change" + GuideLineMode);
-	if(GuideLineMode == 1){
+	console.log("enter Change" + FormulaMode);
+	if(FormulaMode == 1){
 		SectionList = [];
 		DrawGuideLineMatrix();
 	}
@@ -77,9 +71,9 @@ function DrawGuideLineMatrix(){
 	var canvasH = canvas[0].height;
 
 	if(RowCount == 1 && ColCount == 1){
-		var temp = new Section(idx, 0, 0, canvasW, canvasH, true);
-		idx++;
-		SectionList.push(temp);
+		// var temp = new Section(idx, 0, 0, canvasW, canvasH, true);
+		// idx++;
+		// SectionList.push(temp);
 	}
 	else{
 		for(var j = 1; j <= RowCount; j++){
@@ -93,15 +87,15 @@ function DrawGuideLineMatrix(){
 					context2.moveTo(0, canvasH / RowCount * j);
 					context2.lineTo(canvasW, canvasH / RowCount * j);
 				}
-				var temp = new Section(idx + 1, canvasW / ColCount * (i-1), canvasH / RowCount * (j-1), canvasW / ColCount, canvasH / RowCount, true);
-				SectionList.push(temp);
-				console.log(idx + " : " + SectionList[idx-1].X + " " + SectionList[idx-1].Y + " " + SectionList[idx-1].W + " " + SectionList[idx-1].H);
-				idx++;
+				// var temp = new Section(idx + 1, canvasW / ColCount * (i-1), canvasH / RowCount * (j-1), canvasW / ColCount, canvasH / RowCount, true);
+				// SectionList.push(temp);
+				// console.log(idx + " : " + SectionList[idx-1].X + " " + SectionList[idx-1].Y + " " + SectionList[idx-1].W + " " + SectionList[idx-1].H);
+				// idx++;
 
 			}
 		}
 	}
-	console.log("SectionList 개수 : " + SectionList.length);
+//	console.log("SectionList 개수 : " + SectionList.length);
 	context2.stroke();
 
 	context2.setLineDash([0]);
@@ -148,13 +142,10 @@ function Init(){
 
 
 function drawMatrixValue() {
-
-			 	if(RowCount == Row.length && ColCount == A.length){
-			 		console.log(RowCount + "그릴수있어요~ " + ColCount);
-			 		calculatePosAndDraw();
-			 	}
-
-
+ 	if(RowCount == Row.length && ColCount == A.length){
+ 		console.log(RowCount + "그릴수있어요~ " + ColCount);
+ 		calculatePosAndDraw();
+ 	}
 }
 
 
@@ -231,29 +222,30 @@ function drop(ev) {
 
 //울프람알파로 보낼때 호출하기
 function StoreMatrix() {
-   var txtBox = document.getElementById("plain_text");
-
-   Row = txtBox.value.split("\n");
+	var matrix_string = "";
+	var output_string ="";
+    var txtBox = document.getElementById("plain_text");
+    var Row = null;
+	var A = null;
+    Row = txtBox.value.split("\n");
 
     // 행렬 입력
     matrix_string = matrix_string + "{";
     for (var i = 0; i < Row.length; i++)
-     {
+    {
         matrix[i] = new Array();
         A = Row[i].split(" ");
 
         matrix_string = matrix_string + "(";
         for (var j = 0; j < A.length; j++)
         {
-           matrix[i][j] = new Array();
-           console.log(A[j]);
+           	matrix[i][j] = new Array();
+           	console.log(A[j]);
             matrix[i][j] = A[j];
             if(j==A.length-1)
                matrix_string = matrix_string + A[j] + ")";
             else
             matrix_string = matrix_string + A[j] + ",";
-
-         //console.log(
         }
         if(i==Row.length-1)
             matrix_string = matrix_string + "}";
