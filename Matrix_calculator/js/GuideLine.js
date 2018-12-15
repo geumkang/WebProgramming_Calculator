@@ -21,6 +21,8 @@ var numEnter = 1;
 var inputValue = null;
 
 var matrix = new Array();
+var Row = null;
+var A = null;
 
 // formula string
 var matrix_string = "";
@@ -147,25 +149,7 @@ function Init(){
 
 function drawMatrixValue() {
 
-
- var txtBox = document.getElementById("plain_text");
- var Row = txtBox.value.split("\n");
-
-       for (var i = 0; i < Row.length; i++)
-       {
-         var A = Row[i].split(" ");
-
-         for (var j = 0; j < A.length; j++)
-         {
-            if(j==A.length-1){}
-            else  {numSpace +=1;}
-         }
-         if(i==Row.length-1){}
-         else{ numEnter +=1;}
-			 }
-
-			 	// 2. 맞다면 숫자를 그린다
-			 	if(RowCount == numEnter && ColCount == numSpace){
+			 	if(RowCount == Row.length && ColCount == A.length){
 			 		console.log(RowCount + "그릴수있어요~ " + ColCount);
 			 		calculatePosAndDraw();
 			 	}
@@ -177,15 +161,21 @@ function drawMatrixValue() {
 function calculatePosAndDraw(){
 
 	console.log("canvas 그리기");
+
+			console.log(RowCount);
+			console.log(ColCount);
 			var X = 1000;
 			var Y = 500;
-			var x = X / RowCount;
-			var y = Y / ColCount;
+			var x = X / ColCount;
+			var y = Y / RowCount;
 
 			var startX = 0;
 			var startY = 0;
 			var charX = 0;
 			var charY = 0;
+
+			var _x = 0;
+			var _y = 0;
 
 			for (var i = 0; i < RowCount; i++)
 			{
@@ -201,13 +191,14 @@ function calculatePosAndDraw(){
 					startX = j * x;
 					startY = i * y;
 
-					charX = startX + x/2;
-					charY = startY + y/2 - (valueLength)/2;
+					charX = startX + x/2 - (valueLength)/2;
+					charY = startY + y/2; // - (valueLength)/2;
 
+					//context.font = '150px';
 					context.fillText(value, charX, charY);
 					console.log("숫자 그림");
-
-				}
+					_x+=1;
+				}_y+=1;
 			}
 
 }
@@ -242,14 +233,14 @@ function drop(ev) {
 function StoreMatrix() {
    var txtBox = document.getElementById("plain_text");
 
-    var Row = txtBox.value.split("\n");
+   Row = txtBox.value.split("\n");
 
     // 행렬 입력
     matrix_string = matrix_string + "{";
     for (var i = 0; i < Row.length; i++)
      {
         matrix[i] = new Array();
-        var A = Row[i].split(" ");
+        A = Row[i].split(" ");
 
         matrix_string = matrix_string + "(";
         for (var j = 0; j < A.length; j++)
