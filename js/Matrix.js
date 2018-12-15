@@ -169,8 +169,8 @@ function drop_Matrix(ev) {
 
 //울프람알파로 보낼때 호출하기
 function StoreMatrix() {
-	var matrix_string = "";
-	var output_string ="";
+	matrix_string = "";
+	output_string ="";
     var txtBox = document.getElementById("plain_text2");
     var Row = null;
 	var A = null;
@@ -200,30 +200,6 @@ function StoreMatrix() {
             matrix_string = matrix_string + ",";
     }
     console.log(matrix_string);
-
-    // radio button 결합
-
-    if(document.getElementById("det").checked)
-       output_string = "det " + matrix_string;
-
-   if(document.getElementById("inverse").checked)
-      output_string = "inverse " + matrix_string;
-
-   if(document.getElementById("transpose").checked)
-      output_string = "transpose " + matrix_string;
-
-   if(document.getElementById("row_reduce").checked)
-      output_string = "row reduce " + matrix_string;
-
-   if(document.getElementById("eigenvalues").checked)
-      output_string = "eigenvalues " + matrix_string;
-
-   if(document.getElementById("rank").checked)
-      output_string = "rank " + matrix_string;
-
-   console.log(output_string);
-
-	 request_string = output_string;
 }
 
 function menu_select(click_id){
@@ -262,6 +238,31 @@ function menu_select(click_id){
 // Req_send();
 
 function Req_send2(){
+
+	    // radio button 결합
+
+	    if(document.getElementById("det").checked)
+	       output_string = "det " + matrix_string;
+
+	   if(document.getElementById("inverse").checked)
+	      output_string = "inverse " + matrix_string;
+
+	   if(document.getElementById("transpose").checked)
+	      output_string = "transpose " + matrix_string;
+
+	   if(document.getElementById("row_reduce").checked)
+	      output_string = "row reduce " + matrix_string;
+
+	   if(document.getElementById("eigenvalues").checked)
+	      output_string = "eigenvalues " + matrix_string;
+
+	   if(document.getElementById("rank").checked)
+	      output_string = "rank " + matrix_string;
+
+	   console.log(output_string);
+
+		 request_string = output_string;
+
 	Request_matrix_cal(request_string);
 //		wait(3000);
 	setTimeout(function(){StringToMatrix();}, 5000);
