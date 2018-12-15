@@ -191,10 +191,10 @@ function calculatePosAndDraw(){
 					startX = j * x;
 					startY = i * y;
 
-					charX = startX + x/2 - (valueLength)/2;
+					charX = startX + x/2 - (valueLength)*4;
 					charY = startY + y/2; // - (valueLength)/2;
 
-					//context.font = '150px';
+					context.font = "20px Georgia";
 					context.fillText(value, charX, charY);
 					console.log("숫자 그림");
 					_x+=1;
