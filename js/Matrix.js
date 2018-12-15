@@ -183,14 +183,14 @@ function StoreMatrix() {
         matrix[i] = new Array();
         A = Row[i].split(" ");
 
-        matrix_string = matrix_string + "(";
+        matrix_string = matrix_string + "{";
         for (var j = 0; j < A.length; j++)
         {
            	matrix[i][j] = new Array();
            	console.log(A[j]);
             matrix[i][j] = A[j];
             if(j==A.length-1)
-               matrix_string = matrix_string + A[j] + ")";
+               matrix_string = matrix_string + A[j] + "}";
             else
             matrix_string = matrix_string + A[j] + ",";
         }
