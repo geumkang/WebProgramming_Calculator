@@ -8,3 +8,9 @@ function StringTokenizerForExpr(_string)
 
   return string.split("$");
 }
+
+function StringTokenizer4Result(_string){
+  var arr_string = _string.split("=");
+
+  return arr_string[arr_string.length-1].trim();;
+}

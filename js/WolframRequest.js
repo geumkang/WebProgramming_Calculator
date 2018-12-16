@@ -15,13 +15,19 @@ function Req_send(query)
   xhr.open('GET', req, true);
 
   xhr.onload = function () {
-    console.log(xhr.responseText);
 	var ans = JSON.parse(xhr.responseText);
   input = ans.queryresult.pods[0].subpods[0].plaintext;
   inputsrc = ans.queryresult.pods[0].subpods[0].img.src;
   output = ans.queryresult.pods[1].subpods[0].plaintext;
   outputsrc = ans.queryresult.pods[1].subpods[0].img.src;
-  console.log(output);
+
+  if(output == ""){
+    var result = StringTokenizer4Result(input);
+    Result_getter(result);
+  }else{
+      Result_getter(output);
+  }
+
   /*
   FIX PARTS
   */

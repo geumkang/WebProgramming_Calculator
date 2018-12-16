@@ -12,6 +12,7 @@ const ROOTNODE        =   1005;
 
 function init_tree()
 {
+  identifier = 0;
   root_node = new calculate_tree_root();
   push_to_nodelist(root_node, new calculate_tree(NOTDEFINED, "Drag Here!", root_node));
 
@@ -227,14 +228,14 @@ function calculate_tree_toString(node)
           math_expr =
           "(" +
           "sum_(" + calculate_tree_toString(node.nodelist[0]) + ")^" +
-          calculate_tree_toString(node.nodelist[1]) + " " + 
+          calculate_tree_toString(node.nodelist[1]) + " " +
           calculate_tree_toString(node.nodelist[2]) + ")";
         }
         else if(node.value == "integral"){
          math_expr =
           "(" +
           "integral_(" + calculate_tree_toString(node.nodelist[0]) + ")^" +
-          calculate_tree_toString(node.nodelist[1]) + " " + 
+          calculate_tree_toString(node.nodelist[1]) + " " +
           calculate_tree_toString(node.nodelist[2]) + ")";
         }
         else{

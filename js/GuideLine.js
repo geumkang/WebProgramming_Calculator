@@ -78,7 +78,7 @@ function traverse(node, section){
 				max = size - temp2.W;
 			if(max < size)
 				max = size;
-			section = traverse(node.nodelist[2], new Section(section.X + max, section.Y, section.W - max, section.H));	
+			section = traverse(node.nodelist[2], new Section(section.X + max, section.Y, section.W - max, section.H));
 		}
 		else if(node.value == "integral"){
 			var max = 0;
@@ -98,6 +98,13 @@ function traverse(node, section){
 			section = drawGuideLine(section.X, section.Y, section.W, section.H, ")");
 			section = traverse(node.nodelist[1], new Section(section.X, section.Y, section.W, section.H/2));
 			section = new Section(section.X, section.Y, section.W, section.H * 2);
+		}
+		else if(node.type == ROOTNODE){
+			section = traverse(node.nodelist[0], new Section(section.X, section.Y, section.W, section.H));
+			if(node.nodelist.length != 1){
+				section = drawGuideLine(section.X, section.Y, section.W, section.H, "=");
+				section = drawGuideLine(section.X, section.Y, section.W, section.H, node.nodelist[1]);
+			}
 		}
 
 		else{
@@ -120,7 +127,7 @@ function drawGuideLine(X, Y, W, H, node){
 	if(GuideLineMode) contextDash.strokeRect(X,Y,size,H);
 	SectionList.push(new Section(X,Y,size,H, true, node));
 
-	if(node == "(" || node == ")"){
+	if(node == "(" || node == ")" || node == "="){
 		console.log(node, ", ", size, ", ", H);
 		context.fillText(node, X, Y + H/2, size, H);
 	}
@@ -128,7 +135,7 @@ function drawGuideLine(X, Y, W, H, node){
 		var img = new Image();
 		img.src = document.getElementById("sigma").src;
 		context.drawImage(img, 0, 0, img.width, img.height, X, Y, W, H);
-	}	
+	}
 	else if(value == "integral"){
 		var img = new Image();
 		img.src = document.getElementById("integral").src;
@@ -163,7 +170,7 @@ function getSize(node){
 		var value = node.value;
 		var unit = 50;
 
-		if(node == "(" || node == ")"){
+		if(node == "(" || node == ")" || node == "="){
 			return unit / 5;
 		}
 		else if(type == NOTDEFINED){
@@ -213,7 +220,7 @@ function dragStart(ev)
 function dropEnd(ev)
 {
 	ev.preventDefault();
-	
+
 	var exprType = ev.dataTransfer.getData("text");
 	var node = findSectionNode(event.offsetX, event.offsetY);
 
@@ -221,10 +228,10 @@ function dropEnd(ev)
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		contextDash.clearRect(0, 0, canvas.width, canvas.height);
 		if(exprType == "plain_text"){
-			insert(node, NONARITHMETIC, document.getElementById(exprType).value);	
+			insert(node, NONARITHMETIC, document.getElementById(exprType).value);
 		}
 		else if(exprType == "plus" || exprType == "minus" || exprType == "multiply" || exprType == "divide"){
-			insert(node, ARITHMETIC, exprType);	
+			insert(node, ARITHMETIC, exprType);
 		}
 		else{
 			insert(node, NONARITHMETIC, exprType);
@@ -238,7 +245,7 @@ function dropEnd(ev)
 // 이동하면서 지나는 구역들에 가이드라인을 그려줌
 function mouseMove(ev){
 	current = findSection(event.offsetX, event.offsetY);
-	
+
 	if(mouseSection == -1){
 		if(!GuideLineMode)
 			contextDash.clearRect(0, 0, canvas.width, canvas.height);
@@ -255,7 +262,7 @@ function mouseMove(ev){
 			mouseSection = current;
 		}
 	}
-	
+
 }
 
 function drawStart(ev){
@@ -278,8 +285,8 @@ function drawEnd(ev){
 	if(GuideLineMode){
 		contextDash.clearRect(0, 0, canvas.width, canvas.height);
 		for(var i = SectionList.length - 1; i > -1; i--){
-			contextDash.strokeRect(SectionList[i].X,SectionList[i].Y,SectionList[i].W,SectionList[i].H);	
-		}		
+			contextDash.strokeRect(SectionList[i].X,SectionList[i].Y,SectionList[i].W,SectionList[i].H);
+		}
 	}
 
 	var Endnode = findSectionNode(event.offsetX, event.offsetY);
@@ -287,12 +294,12 @@ function drawEnd(ev){
 	console.log("StartParent + ", DragStartNode.parent_node);
 	//console.log("End + ", Endnode);
 	insert(CommonParentNode, UPPERNODE, "pow");
-	
+
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	contextDash.clearRect(0, 0, canvas.width, canvas.height);
 	SectionList = new Array();
 	traverse(root_node.nodelist[0], new Section(0,0,canvas.width,canvas.height));
-	
+
 }
 //////////////////////////////////////////////////
 //
@@ -312,19 +319,19 @@ function Init(){
 
 	canvas = document.getElementById("chart");
 	canvas2 = document.getElementById("chart2");
-	
+
 	context = canvas2.getContext('2d');
 	context.font = "20px Georgia";
 
 	contextDash = canvas.getContext('2d');
 	contextDash.setLineDash([3,1]);
-	
+
 	// Initialize SectionList
 	SectionList = new Array();
 	SectionList.push(new Section(0,0,canvas.width, canvas.height, true, root_node.nodelist[0]));
 }
 
-function GuideLineModeChanged(){	
+function GuideLineModeChanged(){
 	if(GuideLineMode == true){
 		contextDash.clearRect(0, 0, canvas.width, canvas.height);
 	}
@@ -338,4 +345,12 @@ function GuideLineModeChanged(){
 	GuideLineMode = !GuideLineMode;
 }
 
+/*
+Result Getter
+*/
 
+function Result_getter(result){
+	root_node.nodelist[1] = new calculate_tree(NONARITHMETIC, result, root_node);
+
+	traverse(root_node, new Section(0,0,canvas.width,canvas.height));
+}
