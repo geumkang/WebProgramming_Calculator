@@ -69,6 +69,7 @@ function DrawGuideLineMatrix(){
 
 // 초기 설정
 function Init_matrix(){
+	rMatrix = new Array();
 	matrix = new Array();
 	matrix_string = "";
 
@@ -304,8 +305,10 @@ function StringToMatrix() {
 		//wait(3000);
 console.log("cal_matrix : " + AA);
 console.log("stt확인");
-    var rRow = null;
+  var rRow = null;
 	var rA = null;
+
+
   AA=AA.replace("(", "");
   AA=AA.replace(")", "");
 	console.log("cal_matrix_new : " + AA);
