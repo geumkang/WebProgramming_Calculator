@@ -1,0 +1,84 @@
+@charset "UTF-8";
+
+.canvas{
+	position: absolute;
+	z-index: 3;
+	width: 1200px;
+	height: 500px;
+	border:1px solid;
+}
+
+.canvas2{
+	position: relative;
+	background-color: #ffffff;
+	z-index: 1;
+	width: 1200px;
+	height: 500px;
+}
+
+.canvas3{
+	position: relative;
+	background-color: #ffffff;
+	z-index: 2;
+	width: 1200px;
+	height: 500px;
+	border:1px solid;
+	display: none;
+}
+
+.formula{
+	margin-right: 20px;
+	padding: 15px;
+	padding-bottom: 18px;
+	border: 1px solid;
+	float: left;
+	height: 70px;
+	cursor: pointer;
+	background-color: white;
+}
+
+.Result{
+	margin-right: 20px;
+	padding: 15px;
+	padding-bottom: 18px;
+	border: 1px solid;
+	float: left;
+	height: 70px;
+	width: 70px;
+	font-size: 15px;
+	background-color: #82b5f0;
+	color:#fff;
+	text-align: center;
+	cursor: pointer;
+}
+
+.result{
+	align-content: center;
+	vertical-align: center;
+}
+
+
+#matrix_input_button{
+	display: none;
+}
+
+button{
+	width: 150px;
+	font-size: 15px;
+	padding: 5px;
+	background-color: #82b5f0;
+	text-decoration: none;
+	border: none;
+	color:#fff;
+	text-align: center;
+	cursor: pointer;
+	border-radius:1px;
+	padding: 5px 0;
+	margin-bottom: 2px;
+	-webkit-transition-duration: 0.4s;
+ 	transition-duration: 0.4s;	
+}
+button:hover{
+	background-color: #acc0ca;
+	color: #000000;
+}

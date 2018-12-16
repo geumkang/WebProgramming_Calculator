@@ -280,26 +280,27 @@ function drawStart(ev){
 }
 
 function drawEnd(ev){
-	DashColor = "rgb(255,0,0)";
-	contextDash.strokeStyle = DashColor;
-	if(GuideLineMode){
-		contextDash.clearRect(0, 0, canvas.width, canvas.height);
-		for(var i = SectionList.length - 1; i > -1; i--){
-			contextDash.strokeRect(SectionList[i].X,SectionList[i].Y,SectionList[i].W,SectionList[i].H);
+	if(DragStartNode != null){
+		DashColor = "rgb(255,0,0)";
+		contextDash.strokeStyle = DashColor;
+		if(GuideLineMode){
+			contextDash.clearRect(0, 0, canvas.width, canvas.height);
+			for(var i = SectionList.length - 1; i > -1; i--){
+				contextDash.strokeRect(SectionList[i].X,SectionList[i].Y,SectionList[i].W,SectionList[i].H);
+			}
 		}
+
+		var Endnode = findSectionNode(event.offsetX, event.offsetY);
+		var CommonParentNode = search_common_parent(DragStartNode, Endnode);
+		console.log("StartParent + ", DragStartNode.parent_node);
+		//console.log("End + ", Endnode);
+		insert(CommonParentNode, UPPERNODE, "pow");
+
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		contextDash.clearRect(0, 0, canvas.width, canvas.height);
+		SectionList = new Array();
+		traverse(root_node.nodelist[0], new Section(0,0,canvas.width,canvas.height));
 	}
-
-	var Endnode = findSectionNode(event.offsetX, event.offsetY);
-	var CommonParentNode = search_common_parent(DragStartNode, Endnode);
-	console.log("StartParent + ", DragStartNode.parent_node);
-	//console.log("End + ", Endnode);
-	insert(CommonParentNode, UPPERNODE, "pow");
-
-	context.clearRect(0, 0, canvas.width, canvas.height);
-	contextDash.clearRect(0, 0, canvas.width, canvas.height);
-	SectionList = new Array();
-	traverse(root_node.nodelist[0], new Section(0,0,canvas.width,canvas.height));
-
 }
 //////////////////////////////////////////////////
 //
