@@ -16,6 +16,7 @@ function Req_send(query)
 
   xhr.onload = function () {
 	var ans = JSON.parse(xhr.responseText);
+  console.log(ans);
   input = ans.queryresult.pods[0].subpods[0].plaintext;
   inputsrc = ans.queryresult.pods[0].subpods[0].img.src;
   output = ans.queryresult.pods[1].subpods[0].plaintext;
